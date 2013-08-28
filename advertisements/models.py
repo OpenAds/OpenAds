@@ -26,7 +26,7 @@ class Advertisement(models.Model):
 
     image = models.ImageField(
         max_length=255,
-        upload_to='adverts',
+        upload_to='resources',
         height_field='image_height',
         width_field='image_width'
     )
