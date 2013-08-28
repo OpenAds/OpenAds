@@ -1,0 +1,11 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body style="background-color: {{ body_back }}">
+    {% block content %}{% endblock %}
+</body>
+</html>
