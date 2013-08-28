@@ -1,0 +1,37 @@
+{
+    "server_login": "localhost",
+    "website_url": "localhost:8000",
+
+    "database": {
+        "type": "mysql",
+        "host": "localhost",
+        "name": "db",
+        "user": "root",
+        "pass": ""
+    },
+
+    "deploy_settings": {
+        "deploy_to": "/var/openads",
+        "deploy_user": "root",
+        "deploy_nginx": "/etc/nginx",
+        "deploy_supervisor": "/etc/supervisor/conf.d",
+        "deploy_log_folder": "logs",
+        "deploy_gunicorn_socket": "gunicorn.sock",
+        "deploy_gunicorn_starter": "gunicorn_start",
+        "deploy_virtualenv_dir": "env"
+    },
+
+    "other_settings": {
+        "email_host": "localhost",
+        "email_host_user": "username",
+        "email_host_password": "password",
+        "default_from_email": "from@example.com",
+        "email_port": 25,
+        "email_use_tls": false
+    },
+
+    "admins":{
+        "Admin Name": "email@example.com",
+        "Bdmin Name": "tests@example.com"
+    }
+}
