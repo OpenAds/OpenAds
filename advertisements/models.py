@@ -4,6 +4,9 @@ from django.db import models
 class Provider(models.Model):
     name = models.CharField(max_length=255)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Advertisement(models.Model):
     TOP_AD = 't'
@@ -17,16 +20,21 @@ class Advertisement(models.Model):
     ad_type = models.CharField(max_length=1, choices=AD_TYPES)
     provider = models.ForeignKey(Provider)
 
-    image_height = models.IntegerField(max_length=64)
-    image_width = models.IntegerField(max_length=64)
+    image_height = models.IntegerField(max_length=64, editable=False)
+    image_width = models.IntegerField(max_length=64, editable=False)
 
-    image = models.ImageField(max_length=255, upload_to='adverts')
+    image = models.ImageField(
+        max_length=255,
+        upload_to='adverts',
+        height_field='image_height',
+        width_field='image_width'
+    )
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return "{} ()".format(self.provider.name, self.get_ad_type_display())
+        return "{} ({})".format(self.provider.name, self.get_ad_type_display())
 
 
 class Click(models.Model):
