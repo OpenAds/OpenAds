@@ -16,6 +16,8 @@
   </style>
 </head>
 <body>
-    <img border="0" width="728" height="90" src="{{ advert.image.url }}" class="banner-image">
+    <a href="{% url 'advertisements.views.click_register' advert.pk %}">
+      <img border="0" width="728" height="90" src="{{ advert.image.url }}" class="banner-image">
+    </a>
 </body>
 </html>
