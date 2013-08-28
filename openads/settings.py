@@ -132,6 +132,9 @@ INSTALLED_APPS = (
 
     # Packages
     'south',
+
+    # Custom apps
+    'advertisements',
 )
 
 # A sample logging configuration. The only tangible logging
