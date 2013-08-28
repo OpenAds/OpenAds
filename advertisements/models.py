@@ -37,6 +37,14 @@ class Advertisement(models.Model):
     def __unicode__(self):
         return "{} ({})".format(self.provider.name, self.get_ad_type_display())
 
+    def clicked(self):
+        click = Click(
+            ad=self,
+        )
+        click.save()
+
+        return click
+
 
 class Click(models.Model):
     ad = models.ForeignKey(Advertisement)

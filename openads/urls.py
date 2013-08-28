@@ -6,13 +6,7 @@ from django.conf import settings
 
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'openads.views.home', name='home'),
-    # url(r'^openads/', include('openads.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
+    url(r'^ads/', include('advertisements.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
 
