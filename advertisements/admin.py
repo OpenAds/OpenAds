@@ -16,7 +16,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
         width = 125
         if obj.ad_type == Advertisement.TOP_AD:
-            width = 400
+            width = 300
 
         return '<img src="{}" width="{}" />'.format(obj.image.url, width)
     image_thumbnail.allow_tags = True
