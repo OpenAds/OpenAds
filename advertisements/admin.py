@@ -6,7 +6,7 @@ from django.db.models import Count
 class AdvertisementAdmin(admin.ModelAdmin):
     list_display = ('provider', 'ad_type', 'image', 'created', 'enabled', 'total_views')
     date_hierarchy = 'created'
-    list_filter = ('ad_type', 'created')
+    list_filter = ('ad_type', 'enabled', 'created')
 
     def total_views(self, obj):
         return obj.click_set.count()
