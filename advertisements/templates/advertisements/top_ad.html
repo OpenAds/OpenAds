@@ -2,10 +2,16 @@
 <html>
 <head>
   <title></title>
+  <style type="text/css">
+    .banner-image {
+      width: 728px;
+      height: 90px;
+      display: block;
+      visibility: visible;
+    }
+  </style>
 </head>
 <body>
-  {% for ad in adverts %}
-    {{ ad }}
-  {% endfor %}
+    <img border="0" width="728" height="90" src="{{ advert.image.url }}" class="banner-image">
 </body>
 </html>

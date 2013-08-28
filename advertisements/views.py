@@ -12,10 +12,10 @@ def click_register(request, ad_pk):
 
 
 def top_ad(request):
-    if not Advertisement.objects.exists():
+    if not Advertisement.objects.filter(ad_type=Advertisement.TOP_AD).exists():
         return HttpResponse("No adverts") # TODO: Placeholder
-    adverts = Advertisement.objects.order_by('?')[:4]
+    advert = Advertisement.objects.filter(ad_type=Advertisement.TOP_AD).order_by('?')[0]
 
     return render(request, 'advertisements/top_ad.html', {
-        "adverts": adverts,
+        "advert": advert,
     })
