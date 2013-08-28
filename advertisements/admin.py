@@ -18,17 +18,23 @@ class AdvertisementAdmin(admin.ModelAdmin):
         return q
 
     def make_enabled(self, request, queryset):
-        # This is the only safe way to update due to the annotate below
-        for advert in queryset:
-            advert.enabled = True
-            advert.save()
+        updated_count = queryset.update(enabled=True)
+        if updated_count == 1:
+            message_beginning = '1 advertisement was'
+        else:
+            message_beginning = '{} advertisements were'.format(updated_count)
+        self.message_user(request, "{} successfully enabled.".format(message_beginning))
+
     make_enabled.short_description = 'Enable the selected advertisements'
 
     def make_disabled(self, request, queryset):
-        # This is the only safe way to update due to the annotate below
-        for advert in queryset:
-            advert.enabled = False
-            advert.save()
+        updated_count = queryset.update(enabled=False)
+        if updated_count == 1:
+            message_beginning = '1 advertisement was'
+        else:
+            message_beginning = '{} advertisements were'.format(updated_count)
+        self.message_user(request, "{} successfully disabled.".format(message_beginning))
+
     make_disabled.short_description = 'Disable the selected advertisements'
 
     actions = [make_enabled, make_disabled]
