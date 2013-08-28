@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    a {
+      text-decoration: none;
+      margin: 0;
+      padding: 0;
+      float: left;
+      margin-right: 4px;
+    }
+    .container {
+      width: 260px;
+      overflow: visible;
+    }
+    .side-image {
+      width: 125px;
+      height: 125px;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+      {% for advert in adverts %}
+        <a href="{% url 'advertisements.views.click_register' advert.pk %}">
+          <img border="0" width="125" height="125" src="{{ advert.image.url }}" class="side-image">
+        </a>
+      {% endfor %}
+    </div>
+</body>
+</html>

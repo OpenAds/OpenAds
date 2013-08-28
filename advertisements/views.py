@@ -19,3 +19,13 @@ def top_ad(request):
     return render(request, 'advertisements/top_ad.html', {
         "advert": advert,
     })
+
+
+def side_ads(request):
+    if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD).exists():
+        return HttpResponse("No adverts")  # TODO: Placeholder
+    adverts = Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD).order_by('?')[:4]
+
+    return render(request, 'advertisements/side_ads.html', {
+        "adverts": adverts,
+    })
