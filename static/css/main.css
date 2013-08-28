@@ -7,3 +7,18 @@ body {
   height: 90px;
   margin: 0;
   padding: 0; }
+
+.container {
+  width: 254px;
+  overflow: visible; }
+  .container a {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    float: left;
+    margin-right: 4px; }
+    .container a .side-image {
+      width: 125px;
+      height: 125px;
+      margin: 0;
+      padding: 0; }
