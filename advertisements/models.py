@@ -19,6 +19,7 @@ class Advertisement(models.Model):
 
     ad_type = models.CharField(max_length=1, choices=AD_TYPES)
     provider = models.ForeignKey(Provider)
+    url = models.URLField(max_length=255)
 
     image_height = models.IntegerField(max_length=64, editable=False)
     image_width = models.IntegerField(max_length=64, editable=False)
