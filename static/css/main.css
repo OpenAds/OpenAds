@@ -9,8 +9,7 @@ body {
   padding: 0; }
 
 .container {
-  width: 254px;
-  overflow: visible; }
+  width: 254px; }
   .container a {
     text-decoration: none;
     margin: 0;
@@ -22,3 +21,5 @@ body {
       height: 125px;
       margin: 0;
       padding: 0; }
+  .container a:nth-child(2n) {
+    margin-right: 0; }

@@ -12,7 +12,6 @@ body {
 
 .container {
     width: 254px;
-    overflow: visible;
     a {
         text-decoration: none;
         margin: 0;
@@ -27,5 +26,8 @@ body {
             padding: 0;
         }
 
+    }
+    a:nth-child(2n){
+        margin-right: 0;
     }
 }
