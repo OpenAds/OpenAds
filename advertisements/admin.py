@@ -18,7 +18,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
         if obj.ad_type == Advertisement.TOP_AD:
             width = 300
 
-        return '<img src="{}" width="{}" />'.format(obj.image.url, width)
+        return '<img src="{0}" width="{1}" />'.format(obj.image.url, width)
     image_thumbnail.allow_tags = True
 
     def queryset(self, request):
@@ -31,8 +31,8 @@ class AdvertisementAdmin(admin.ModelAdmin):
         if updated_count == 1:
             message_beginning = '1 advertisement was'
         else:
-            message_beginning = '{} advertisements were'.format(updated_count)
-        self.message_user(request, "{} successfully enabled.".format(message_beginning))
+            message_beginning = '{0} advertisements were'.format(updated_count)
+        self.message_user(request, "{0} successfully enabled.".format(message_beginning))
 
     make_enabled.short_description = 'Enable the selected advertisements'
 
@@ -41,8 +41,8 @@ class AdvertisementAdmin(admin.ModelAdmin):
         if updated_count == 1:
             message_beginning = '1 advertisement was'
         else:
-            message_beginning = '{} advertisements were'.format(updated_count)
-        self.message_user(request, "{} successfully disabled.".format(message_beginning))
+            message_beginning = '{0} advertisements were'.format(updated_count)
+        self.message_user(request, "{0} successfully disabled.".format(message_beginning))
 
     make_disabled.short_description = 'Disable the selected advertisements'
 

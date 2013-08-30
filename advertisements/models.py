@@ -36,7 +36,7 @@ class Advertisement(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return "{} ({})".format(self.provider.name, self.get_ad_type_display())
+        return "{0} ({1})".format(self.provider.name, self.get_ad_type_display())
 
     def clicked(self):
         click = Click(
