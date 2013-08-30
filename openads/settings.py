@@ -168,6 +168,14 @@ LOGGING = {
         }
     },
     'loggers': {
+        'logfile': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_PATH, 'errorlog.log'),
+            'maxBytes': 50000,
+            'backupCount': 2,
+            'formatter': 'standard',
+        },
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
