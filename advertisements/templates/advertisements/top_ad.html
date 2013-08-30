@@ -1,6 +1,6 @@
 {% extends 'advertisements/ad_base.html' %}
 {% block content %}
-  <a href="{% url 'advertisements.views.click_register' advert.pk %}">
+  <a target="_blank" href="{% url 'advertisements.views.click_register' advert.pk %}">
     <img border="0" width="728" height="90" src="{{ advert.image.url }}" class="banner-image">
   </a>
 {% endblock %}
