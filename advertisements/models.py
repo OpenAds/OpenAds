@@ -1,4 +1,6 @@
 from django.db import models
+import uuid
+import os
 
 
 class Provider(models.Model):
@@ -6,6 +8,12 @@ class Provider(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('resources', filename)
 
 
 class Advertisement(models.Model):
@@ -27,7 +35,7 @@ class Advertisement(models.Model):
 
     image = models.ImageField(
         max_length=255,
-        upload_to='resources',
+        upload_to=get_file_path,
         height_field='image_height',
         width_field='image_width'
     )
