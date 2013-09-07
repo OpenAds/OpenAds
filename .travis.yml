@@ -7,8 +7,8 @@ env:
   - DJANGO=1.5.1
   - DJANGO=1.5.2
 install:
-  - pip install -q Django==$DJANGO --use-mirrors
   - pip install -q -r requirements.txt --use-mirrors
   - pip install -q -r test_requirements.txt --use-mirrors
+  - pip install -q Django==$DJANGO --use-mirrors
 script:
   - python manage.py test
