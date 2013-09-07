@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from advertisements.models import Advertisement, Provider
 from django.contrib.auth.decorators import login_required
@@ -35,7 +35,12 @@ def side_ads(request):
 
 @login_required
 def go_to_providers(request):
-    return HttpResponseRedirect(reverse('advertisements.views.providers_all'))
+    if request.user.is_superuser:
+        return HttpResponseRedirect(reverse('advertisements.views.providers_all'))
+    else:
+        return HttpResponseRedirect(
+            reverse('advertisements.views.view_provider_statistics', args=[request.user.provider.pk])
+        )
 
 
 @login_required
@@ -48,6 +53,9 @@ def providers_all(request):
 
 @login_required
 def view_provider_statistics(request, provider_pk):
+    if not request.user.is_superuser:
+        if request.user.provider.pk != long(provider_pk):
+            raise Http404
     provider = get_object_or_404(Provider, pk=provider_pk)
 
     return render(request, 'advertisements/statistics/provider_statistics.html', {
