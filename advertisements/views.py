@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from advertisements.models import Advertisement, Provider
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 
 def click_register(request, ad_pk):
@@ -30,6 +31,11 @@ def side_ads(request):
     return render(request, 'advertisements/side_ads.html', {
         "adverts": adverts,
     })
+
+
+@login_required
+def go_to_providers(request):
+    return HttpResponseRedirect(reverse('advertisements.views.providers_all'))
 
 
 @login_required
