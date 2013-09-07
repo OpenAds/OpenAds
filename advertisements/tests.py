@@ -45,3 +45,11 @@ class ProviderViewTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    def test_can_not_view_providers_page(self):
+        """
+        Test that a user can not view the admin overview page of all the providers
+        """
+        response = self.client.get(reverse('advertisements.views.providers_all'))
+
+        self.assertEqual(response.status_code, 404)
+
