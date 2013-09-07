@@ -163,3 +163,55 @@ class SuperuserViewTests(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn('advert', response.context)
             self.assertEqual(response.context['advert'], advert)
+
+
+class UserViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('user', 'test@example.com', 'pass')
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+        )
+        self.provider.save()
+
+        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
+
+        self.client.login(username='user', password='pass')
+
+    def tearDown(self):
+        self.client.logout()
+        self.provider.delete()
+        self.user.delete()
+
+    def test_can_not_view_statistics(self):
+        """
+        Test that a normal user without a provider can not view a provider page
+        """
+        response = self.client.get(
+            reverse('advertisements.views.view_provider_statistics', args=[self.provider.pk]),
+            follow=True
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_can_not_view_providers_page(self):
+        """
+        Test that a normal user without a provider can not view the admin overview page of all the providers
+        """
+        response = self.client.get(reverse('advertisements.views.providers_all'), follow=True)
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_can_not_view_ad_statistics(self):
+        """
+        Test that a normal user without a provider can not view ad statistics
+        """
+
+        for advert in self.provider_adverts:
+            response = self.client.get(
+                reverse('advertisements.views.view_advert_statistics', args=[advert.pk]),
+                follow=True
+            )
+
+            self.assertEqual(response.status_code, 404)
