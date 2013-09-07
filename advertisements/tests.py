@@ -19,6 +19,9 @@ class ProviderViewTests(TestCase):
         )
         self.provider2.save()
 
+        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
+        self.provider2_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider2)
+
         self.client.login(username='provider', password='pass')
 
     def tearDown(self):
@@ -31,7 +34,9 @@ class ProviderViewTests(TestCase):
         """
         Test that a user can view their own provider page without problems
         """
-        response = self.client.get(reverse('advertisements.views.view_provider_statistics', args=[self.user.provider.pk]))
+        response = self.client.get(
+            reverse('advertisements.views.view_provider_statistics', args=[self.user.provider.pk])
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('provider', response.context)
@@ -53,3 +58,24 @@ class ProviderViewTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    def test_can_view_own_ad_statistics(self):
+        """
+        Test that the user can view their own ad statistics
+        """
+
+        for advert in self.provider_adverts:
+            response = self.client.get(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('advert', response.context)
+            self.assertEqual(response.context['advert'], advert)
+
+    def test_can_not_view_other_ad_statistics(self):
+        """
+        Test that the user can not view other ad statistics
+        """
+
+        for advert in self.provider2_adverts:
+            response = self.client.get(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
+
+            self.assertEqual(response.status_code, 404)
