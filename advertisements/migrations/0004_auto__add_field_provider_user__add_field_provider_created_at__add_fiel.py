@@ -3,6 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from django.utils import timezone
 
 
 class Migration(SchemaMigration):
@@ -15,12 +16,12 @@ class Migration(SchemaMigration):
 
         # Adding field 'Provider.created_at'
         db.add_column(u'advertisements_provider', 'created_at',
-                      self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, default=datetime.datetime(2013, 9, 7, 0, 0), blank=True),
+                      self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, default=timezone.now, blank=True),
                       keep_default=False)
 
         # Adding field 'Provider.updated_at'
         db.add_column(u'advertisements_provider', 'updated_at',
-                      self.gf('django.db.models.fields.DateTimeField')(auto_now=True, default=datetime.datetime(2013, 9, 7, 0, 0), blank=True),
+                      self.gf('django.db.models.fields.DateTimeField')(auto_now=True, default=timezone.now, blank=True),
                       keep_default=False)
 
 
