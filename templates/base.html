@@ -22,7 +22,9 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'advertisements.views.go_to_providers' %}">Home</a></li>
+            {% if request.user.is_superuser %}
             <li class="active"><a href="{% url 'advertisements.views.providers_all' %}">Providers</a></li>
+            {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}
