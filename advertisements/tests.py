@@ -193,7 +193,15 @@ class UserViewTests(TestCase):
             follow=True
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(len(response.redirect_chain), 2)
+
+        self.assertEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('accounts:logout'))
+        self.assertEqual(response.redirect_chain[0][1], 302)
+
+        self.assertEqual(response.redirect_chain[1][0], 'http://testserver' + reverse('accounts:login'))
+        self.assertEqual(response.redirect_chain[1][1], 302)
+
+        self.assertEqual(response.status_code, 200)
 
     def test_can_not_view_providers_page(self):
         """
@@ -201,7 +209,15 @@ class UserViewTests(TestCase):
         """
         response = self.client.get(reverse('advertisements.views.providers_all'), follow=True)
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(len(response.redirect_chain), 2)
+
+        self.assertEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('accounts:logout'))
+        self.assertEqual(response.redirect_chain[0][1], 302)
+
+        self.assertEqual(response.redirect_chain[1][0], 'http://testserver' + reverse('accounts:login'))
+        self.assertEqual(response.redirect_chain[1][1], 302)
+
+        self.assertEqual(response.status_code, 200)
 
     def test_can_not_view_ad_statistics(self):
         """
@@ -214,4 +230,12 @@ class UserViewTests(TestCase):
                 follow=True
             )
 
-            self.assertEqual(response.status_code, 404)
+            self.assertEqual(len(response.redirect_chain), 2)
+
+            self.assertEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('accounts:logout'))
+            self.assertEqual(response.redirect_chain[0][1], 302)
+
+            self.assertEqual(response.redirect_chain[1][0], 'http://testserver' + reverse('accounts:login'))
+            self.assertEqual(response.redirect_chain[1][1], 302)
+
+            self.assertEqual(response.status_code, 200)
