@@ -146,6 +146,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "advertisements.context_processors.color_processor",
+    "django.core.context_processors.request",
 )
 
 # A sample logging configuration. The only tangible logging
