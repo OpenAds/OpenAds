@@ -3,10 +3,15 @@ import uuid
 import os
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth.models import User
 
 
 class Provider(models.Model):
     name = models.CharField(max_length=255)
+    user = models.OneToOneField(User, blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
