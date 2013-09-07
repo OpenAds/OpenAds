@@ -45,6 +45,8 @@ def go_to_providers(request):
 
 @login_required
 def providers_all(request):
+    if not request.user.is_superuser:
+        raise Http404
     providers = Provider.objects.all()
 
     return render(request, 'advertisements/statistics/provider_list.html', {
