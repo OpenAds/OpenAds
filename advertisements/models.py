@@ -14,6 +14,15 @@ class Provider(models.Model):
     def active_ads(self):
         return self.advertisement_set.filter(enabled=True).count()
 
+    def inactive_ads(self):
+        return self.advertisement_set.filter(enabled=False).count()
+
+    def total_clicks(self):
+        click_count = 0
+        for advert in self.advertisement_set.filter(enabled=True):
+            click_count += advert.click_set.count()
+        return click_count
+
 
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]

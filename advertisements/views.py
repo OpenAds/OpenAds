@@ -33,6 +33,14 @@ def side_ads(request):
 
 
 @login_required
+def providers_all(request):
+    providers = Provider.objects.all()
+
+    return render(request, 'advertisements/statistics/provider_list.html', {
+        "providers": providers,
+    })
+
+@login_required
 def view_provider_statistics(request, provider_pk):
     provider = get_object_or_404(Provider, pk=provider_pk)
 

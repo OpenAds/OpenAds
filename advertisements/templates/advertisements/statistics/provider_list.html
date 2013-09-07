@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block page-title %}Providers{% endblock %}
+
+{% block content %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Provider</th>
+        <th>Active Adverts</th>
+        <th>Inactive Adverts</th>
+        <th>Total Clicks</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for provider in providers %}
+        <tr>
+          <td><a href="{% url 'advertisements.views.view_provider_statistics' provider.pk %}">{{ provider.name }}</a></td>
+          <td>{{ provider.active_ads }}</td>
+          <td>{{ provider.inactive_ads }}</td>
+          <td>{{ provider.total_clicks }}</td>
+          <td>
+            <div class="btn-group">
+              <a href="#" class="btn btn-success">Edit</a>
+              <a href="#" class="btn btn-info">View</a>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
