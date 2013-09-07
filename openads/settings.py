@@ -131,6 +131,7 @@ INSTALLED_APPS = (
 
     # Packages
     'south',
+    'chartit',
 
     # Custom apps
     'advertisements',
