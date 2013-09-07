@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from advertisements.models import Advertisement
+from advertisements.models import Advertisement, Provider
+from django.contrib.auth.decorators import login_required
 
 
 def click_register(request, ad_pk):
@@ -28,4 +29,13 @@ def side_ads(request):
 
     return render(request, 'advertisements/side_ads.html', {
         "adverts": adverts,
+    })
+
+
+@login_required
+def view_provider_statistics(request, provider_pk):
+    provider = get_object_or_404(Provider, pk=provider_pk)
+
+    return render(request, 'advertisements/statistics/provider_statistics.html', {
+        "provider": provider,
     })
