@@ -49,5 +49,5 @@ def view_advert_statistics(request, advert_pk):
 
     return render(request, 'advertisements/statistics/advert_statistics.html', {
         "advert": advert,
-
+        "history": advert.click_history(history_days=10),
     })

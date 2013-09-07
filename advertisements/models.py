@@ -1,6 +1,8 @@
 from django.db import models
 import uuid
 import os
+from django.utils import timezone
+from datetime import timedelta
 
 
 class Provider(models.Model):
@@ -61,6 +63,22 @@ class Advertisement(models.Model):
         if self.ad_type == self.SIDE_AD:
             return True
         return False
+
+    def click_history(self, history_days=10):
+        today = timezone.now().date()
+        click_data = []
+        for days_back in reversed(xrange(history_days)):
+            date = today - timedelta(days=days_back)
+            clicks = self.click_set.filter(
+                date__year=date.year,
+                date__month=date.month,
+                date__day=date.day,
+            ).count()
+            click_data.append({
+                "date": date,
+                "clicks": clicks
+            })
+        return click_data
 
 
 class Click(models.Model):
