@@ -25,7 +25,11 @@
             <li class="active"><a href="{% url 'advertisements.views.providers_all' %}">Providers</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Logout</a></li>
+            {% if request.user.is_authenticated %}
+              <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+            {% else %}
+              <li><a href="{% url 'accounts:login' %}">Login</a></li>
+            {% endif %}
           </ul>
         </div>
       </nav>

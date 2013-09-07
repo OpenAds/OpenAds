@@ -134,6 +134,7 @@ INSTALLED_APPS = (
 
     # Custom apps
     'advertisements',
+    'accounts',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
