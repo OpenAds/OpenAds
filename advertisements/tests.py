@@ -239,3 +239,60 @@ class UserViewTests(TestCase):
             self.assertEqual(response.redirect_chain[1][1], 302)
 
             self.assertEqual(response.status_code, 200)
+
+
+class AdvertisementViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
+        self.user.is_superuser = True
+        self.user.is_staff = True
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+            user=self.user,
+        )
+        self.provider.save()
+
+        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
+
+        self.client.login(username='admin', password='pass')
+
+    def tearDown(self):
+        self.client.logout()
+        self.provider.delete()
+        self.user.delete()
+
+    def test_can_view_top_ads_with_login(self):
+        """
+        Test that a logged in user can view the top ads
+        """
+        response = self.client.get(reverse('advertisements.views.top_ad'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_view_side_ads_with_login(self):
+        """
+        Test that a logged in user can view the side ads
+        """
+        response = self.client.get(reverse('advertisements.views.side_ads'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_view_top_ads_without_login(self):
+        """
+        Test that a logged out user can view the top ads
+        """
+        self.client.logout()
+        response = self.client.get(reverse('advertisements.views.top_ad'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_view_side_ads_without_login(self):
+        """
+        Test that a logged out user can view the side ads
+        """
+        self.client.logout()
+        response = self.client.get(reverse('advertisements.views.side_ads'))
+
+        self.assertEqual(response.status_code, 200)
