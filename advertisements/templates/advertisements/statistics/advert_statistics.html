@@ -3,5 +3,26 @@
 {% block page-title %}{{ advert.get_ad_type_display }}{% endblock %}
 
 {% block content %}
+  {% if advert.is_side %}
+    <img border="0" width="125" height="125" src="{{ advert.image.url }}" style="margin: auto; display: block">
+  {% else %}
+    <img border="0" width="728" height="90" src="{{ advert.image.url }}" style="margin: auto; display: block">
+  {% endif %}
 
+  <table class="table table-bordered" style="margin-top: 20px">
+    <tbody>
+      <tr>
+        <td><strong>Advert link</strong></td>
+        <td><a href="{{ advert.url }}">{{ advert.url }}</a></td>
+      </tr>
+      <tr>
+        <td><strong>Advert created</strong></td>
+        <td>{{ advert.created }}</td>
+      </tr>
+      <tr>
+        <td><strong>Advert updated</strong></td>
+        <td>{{ advert.updated }}</td>
+      </tr>
+    </tbody>
+  </table>
 {% endblock %}
