@@ -67,6 +67,9 @@ def view_provider_statistics(request, provider_pk):
 
 @login_required
 def view_advert_statistics(request, advert_pk):
+    if not request.user.is_superuser:
+        if not request.user.provider.advertisement_set.filter(pk=advert_pk).exists():
+            raise Http404
     advert = get_object_or_404(Advertisement, pk=advert_pk)
 
     return render(request, 'advertisements/statistics/advert_statistics.html', {
