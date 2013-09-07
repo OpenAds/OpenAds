@@ -34,6 +34,7 @@ def side_ads(request):
     })
 
 
+@superuser_or_provider
 @login_required
 def go_to_providers(request):
     if request.user.is_superuser:

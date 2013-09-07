@@ -1,4 +1,5 @@
-from django.http import Http404
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 
 def superuser_or_provider(function):
@@ -8,5 +9,5 @@ def superuser_or_provider(function):
             return function(*args, **kwargs)
         if hasattr(request.user, 'provider'):
             return function(*args, **kwargs)
-        raise Http404
+        return HttpResponseRedirect(reverse('accounts:logout'))
     return authenticate_and_continue
