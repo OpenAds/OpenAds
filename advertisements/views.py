@@ -41,3 +41,13 @@ def view_provider_statistics(request, provider_pk):
         "active_ads": provider.advertisement_set.filter(enabled=True),
         "inactive_ads": provider.advertisement_set.filter(enabled=False),
     })
+
+
+@login_required
+def view_advert_statistics(request, advert_pk):
+    advert = get_object_or_404(Advertisement, pk=advert_pk)
+
+    return render(request, 'advertisements/statistics/advert_statistics.html', {
+        "advert": advert,
+
+    })
