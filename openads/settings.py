@@ -137,6 +137,8 @@ INSTALLED_APPS = (
     'accounts',
 )
 
+LOGIN_REDIRECT_URL = '/data/'
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
