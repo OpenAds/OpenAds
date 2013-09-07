@@ -1,5 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {{ provider.name }}
+  <ul class="nav nav-tabs" style="margin-bottom: 20px">
+    <li class="active"><a href="#active" data-toggle="tab">Active</a></li>
+    <li><a href="#inactive" data-toggle="tab">Not active</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="active">
+      {% for advert in active_ads %}
+        {% include 'advertisements/statistics/advert_panel.html' with advert=advert %}
+      {% endfor %}
+    </div>
+    <div class="tab-pane" id="inactive">
+      {% for advert in inactive_ads %}
+        {% include 'advertisements/statistics/advert_panel.html' with advert=advert %}
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}

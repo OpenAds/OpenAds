@@ -1,0 +1,12 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ advert.get_ad_type_display }} ({{ advert.image_width }} x {{ advert.image_height }})</h3>
+  </div>
+  <div class="panel-body">
+    {% if advert.is_side %}
+      <img border="0" width="125" height="125" src="{{ advert.image.url }}" style="margin: auto; display: block">
+    {% else %}
+      <img border="0" width="728" height="90" src="{{ advert.image.url }}" style="margin: auto; display: block">
+    {% endif %}
+  </div>
+</div>

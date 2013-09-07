@@ -38,4 +38,6 @@ def view_provider_statistics(request, provider_pk):
 
     return render(request, 'advertisements/statistics/provider_statistics.html', {
         "provider": provider,
+        "active_ads": provider.advertisement_set.filter(enabled=True),
+        "inactive_ads": provider.advertisement_set.filter(enabled=False),
     })

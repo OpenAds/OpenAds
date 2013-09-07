@@ -54,6 +54,11 @@ class Advertisement(models.Model):
 
         return click
 
+    def is_side(self):
+        if self.ad_type == self.SIDE_AD:
+            return True
+        return False
+
 
 class Click(models.Model):
     ad = models.ForeignKey(Advertisement)
