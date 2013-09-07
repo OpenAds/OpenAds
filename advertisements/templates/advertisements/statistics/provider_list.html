@@ -22,8 +22,8 @@
           <td>{{ provider.total_clicks }}</td>
           <td>
             <div class="btn-group">
-              <a href="#" class="btn btn-success">Edit</a>
-              <a href="#" class="btn btn-info">View</a>
+              <a href="{% url 'admin:advertisements_provider_change' provider.pk %}" class="btn btn-success">Edit</a>
+              <a href="{% url 'advertisements.views.view_provider_statistics' provider.pk %}" class="btn btn-info">View</a>
             </div>
           </td>
         </tr>
