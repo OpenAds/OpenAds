@@ -9,6 +9,9 @@ class Provider(models.Model):
     def __unicode__(self):
         return self.name
 
+    def active_ads(self):
+        return self.advertisement_set.filter(enabled=True).count()
+
 
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]

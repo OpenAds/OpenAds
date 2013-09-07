@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
-{% block page-title %}{{ provider.name }} advertisements{% endblock %}
+{% block page-title %}
+  {{ provider.name }} advertisements
+  <small>{{ provider.active_ads }} advertisement{{ provider.active_ads|pluralize }} in rotation</small>
+{% endblock %}
 
 {% block content %}
   <ul class="nav nav-tabs" style="margin-bottom: 20px">
