@@ -18,14 +18,14 @@ class Provider(models.Model):
         return self.name
 
     def active_ads(self):
-        return self.advertisement_set.filter(enabled=True).count()
+        return self.advertisement_set.filter(status=Advertisement.ACTIVE).count()
 
     def inactive_ads(self):
-        return self.advertisement_set.filter(enabled=False).count()
+        return self.advertisement_set.filter(status=Advertisement.INACTIVE).count()
 
     def total_clicks(self):
         click_count = 0
-        for advert in self.advertisement_set.filter(enabled=True):
+        for advert in self.advertisement_set.filter(status=Advertisement.ACTIVE):
             click_count += advert.click_set.count()
         return click_count
 
