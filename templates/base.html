@@ -1,4 +1,5 @@
 {% load static %}
+{% load activenav %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -23,7 +24,9 @@
           <ul class="nav navbar-nav">
             <li><a href="{% url 'advertisements.views.go_to_providers' %}">Home</a></li>
             {% if request.user.is_superuser %}
-            <li class="active"><a href="{% url 'advertisements.views.providers_all' %}">Providers</a></li>
+            <li class="{% active_nav request 'advertisements.views.providers_all' %}">
+              <a href="{% url 'advertisements.views.providers_all' %}">Providers</a>
+            </li>
             <li><a href="{% url 'admin:index' %}">Administration</a></li>
             {% endif %}
           </ul>
