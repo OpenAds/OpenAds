@@ -12,6 +12,7 @@
     <li class="active"><a href="#active" data-toggle="tab">Active</a></li>
     <li><a href="#inactive" data-toggle="tab">Not active</a></li>
     <li><a href="#pending" data-toggle="tab">Pending</a></li>
+    <li><a href="{% url 'advertisements.views.provider_request' provider.pk %}">Request ad</a></li>
   </ul>
 
   <div class="tab-content">
