@@ -68,6 +68,7 @@ def view_provider_statistics(request, provider_pk):
         "provider": provider,
         "active_ads": provider.advertisement_set.filter(status=Advertisement.ACTIVE),
         "inactive_ads": provider.advertisement_set.filter(status=Advertisement.INACTIVE),
+        "pending_ads": provider.advertisement_set.filter(status=Advertisement.PENDING),
     })
 
 
