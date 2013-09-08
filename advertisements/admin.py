@@ -4,9 +4,9 @@ from django.db.models import Count
 
 
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ('provider', 'ad_type', 'image_thumbnail', 'created', 'enabled', 'total_clicks')
+    list_display = ('provider', 'ad_type', 'image_thumbnail', 'created', 'status', 'total_clicks')
     date_hierarchy = 'created'
-    list_filter = ('ad_type', 'enabled', 'created')
+    list_filter = ('ad_type', 'status', 'created')
 
     def total_clicks(self, obj):
         return obj.click_set.count()
@@ -27,7 +27,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
         return q
 
     def make_enabled(self, request, queryset):
-        updated_count = queryset.update(enabled=True)
+        updated_count = queryset.update(status=Advertisement.ACTIVE)
         if updated_count == 1:
             message_beginning = '1 advertisement was'
         else:
@@ -37,7 +37,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
     make_enabled.short_description = 'Enable the selected advertisements'
 
     def make_disabled(self, request, queryset):
-        updated_count = queryset.update(enabled=False)
+        updated_count = queryset.update(status=Advertisement.INACTIVE)
         if updated_count == 1:
             message_beginning = '1 advertisement was'
         else:

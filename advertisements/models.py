@@ -18,14 +18,14 @@ class Provider(models.Model):
         return self.name
 
     def active_ads(self):
-        return self.advertisement_set.filter(enabled=True).count()
+        return self.advertisement_set.filter(status=Advertisement.ACTIVE).count()
 
     def inactive_ads(self):
-        return self.advertisement_set.filter(enabled=False).count()
+        return self.advertisement_set.filter(status=Advertisement.INACTIVE).count()
 
     def total_clicks(self):
         click_count = 0
-        for advert in self.advertisement_set.filter(enabled=True):
+        for advert in self.advertisement_set.filter(status=Advertisement.ACTIVE):
             click_count += advert.click_set.count()
         return click_count
 
@@ -48,10 +48,20 @@ class Advertisement(models.Model):
         (SIDE_AD, 'Side Ad'),
     )
 
+    ACTIVE = 'a'
+    INACTIVE = 'i'
+    PENDING = 'p'
+
+    STATUS_CHOICES = (
+        (ACTIVE, 'Active'),
+        (INACTIVE, 'Inactive'),
+        (PENDING, 'Pending'),
+    )
+
     ad_type = models.CharField(max_length=1, choices=AD_TYPES)
     provider = models.ForeignKey(Provider)
     url = models.URLField(max_length=255)
-    enabled = models.BooleanField(default=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=ACTIVE)
 
     image_height = models.IntegerField(max_length=64, editable=False)
     image_width = models.IntegerField(max_length=64, editable=False)

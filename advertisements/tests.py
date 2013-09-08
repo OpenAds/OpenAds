@@ -42,6 +42,26 @@ class ProviderViewTests(TestCase):
         self.assertIn('provider', response.context)
         self.assertEqual(response.context['provider'], self.provider)
 
+    def test_can_view_own_request_page(self):
+        """
+        Test that a user can view their own request page without problems
+        """
+        response = self.client.get(
+            reverse('advertisements.views.provider_request', args=[self.user.provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_not_view_other_request_page(self):
+        """
+        Test that a user can not view other request pages
+        """
+        response = self.client.get(
+            reverse('advertisements.views.provider_request', args=[self.provider2.pk])
+        )
+
+        self.assertEqual(response.status_code, 404)
+
     def test_can_not_view_other_statistics(self):
         """
         Test that a user can not view other peoples pages
@@ -140,6 +160,22 @@ class SuperuserViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    def test_can_view_own_request_page(self):
+        """
+        Test that an admin can view their own request page
+        """
+        response = self.client.get(reverse('advertisements.views.provider_request', args=[self.provider.pk]))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_view_other_request_pages(self):
+        """
+        Test that an admin can view other request pages
+        """
+        response = self.client.get(reverse('advertisements.views.provider_request', args=[self.provider2.pk]))
+
+        self.assertEqual(response.status_code, 200)
+
     def test_can_view_own_ad_statistics(self):
         """
         Test that an admin can view their own ad statistics
@@ -208,6 +244,25 @@ class UserViewTests(TestCase):
         Test that a normal user without a provider can not view the admin overview page of all the providers
         """
         response = self.client.get(reverse('advertisements.views.providers_all'), follow=True)
+
+        self.assertEqual(len(response.redirect_chain), 2)
+
+        self.assertEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('accounts:logout'))
+        self.assertEqual(response.redirect_chain[0][1], 302)
+
+        self.assertEqual(response.redirect_chain[1][0], 'http://testserver' + reverse('accounts:login'))
+        self.assertEqual(response.redirect_chain[1][1], 302)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_not_view_request_page(self):
+        """
+        Test that a normal user without a provider can not view the request ad page
+        """
+        response = self.client.get(
+            reverse('advertisements.views.provider_request', args=[self.provider.pk]),
+            follow=True
+        )
 
         self.assertEqual(len(response.redirect_chain), 2)
 
@@ -314,7 +369,6 @@ class ClickRegisterTest(TestCase):
         self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
 
     def tearDown(self):
-        self.client.logout()
         self.provider.delete()
         self.user.delete()
 
@@ -341,3 +395,49 @@ class ClickRegisterTest(TestCase):
                     follow=True
                 )
                 self.assertEqual(advert.click_set.count(), i+1)
+
+
+class ProviderCountMethodTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
+        self.user.is_superuser = True
+        self.user.is_staff = True
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+            user=self.user,
+        )
+        self.provider.save()
+
+        self.provider_active_adverts = mommy.make(
+            Advertisement, _quantity=20,
+            provider=self.provider,
+            status=Advertisement.ACTIVE
+        )
+        self.provider_inactive_adverts = mommy.make(
+            Advertisement, _quantity=20,
+            provider=self.provider,
+            status=Advertisement.INACTIVE
+        )
+        self.provider_pending_adverts = mommy.make(
+            Advertisement, _quantity=20,
+            provider=self.provider,
+            status=Advertisement.PENDING
+        )
+
+    def tearDown(self):
+        self.provider.delete()
+        self.user.delete()
+
+    def test_active_ads_returns_correct_amounts(self):
+        """
+        Test that the active_ads method on a provider returns the correct amount
+        """
+        self.assertEqual(self.provider.active_ads(), 20)
+
+    def test_inactive_ads_returns_correct_amounts(self):
+        """
+        Test that the inactive_ads method on a provider returns the correct amount
+        """
+        self.assertEqual(self.provider.inactive_ads(), 20)

@@ -11,6 +11,8 @@
   <ul class="nav nav-tabs" style="margin-bottom: 20px">
     <li class="active"><a href="#active" data-toggle="tab">Active</a></li>
     <li><a href="#inactive" data-toggle="tab">Not active</a></li>
+    <li><a href="#pending" data-toggle="tab">Pending</a></li>
+    <li><a href="{% url 'advertisements.views.provider_request' provider.pk %}">Request ad</a></li>
   </ul>
 
   <div class="tab-content">
@@ -21,6 +23,11 @@
     </div>
     <div class="tab-pane" id="inactive">
       {% for advert in inactive_ads %}
+        {% include 'advertisements/statistics/advert_panel.html' with advert=advert ad_num=forloop.counter %}
+      {% endfor %}
+    </div>
+    <div class="tab-pane" id="pending">
+      {% for advert in pending_ads %}
         {% include 'advertisements/statistics/advert_panel.html' with advert=advert ad_num=forloop.counter %}
       {% endfor %}
     </div>

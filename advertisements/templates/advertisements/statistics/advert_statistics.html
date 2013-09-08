@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
-{% block page-title %}{{ advert.get_ad_type_display }}{% endblock %}
+{% block page-title %}
+  {{ advert.get_ad_type_display }}
+  <small>ID number: {{ advert.pk }}</small>
+{% endblock %}
 
 {% block content %}
   {% if advert.is_side %}
@@ -14,7 +18,40 @@
     <tbody>
       <tr>
         <td><strong>Advert link</strong></td>
-        <td><a href="{{ advert.url }}">{{ advert.url }}</a></td>
+        <td>
+          <div class="panel-group" id="urlaccordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#urlaccordion" href="#currentUrl">
+                    Current Url
+                  </a>
+                </h4>
+              </div>
+              <div id="currentUrl" class="panel-collapse collapse in">
+                <div class="panel-body">
+                  <a href="{{ advert.url }}">{{ advert.url }}</a>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#urlaccordion" href="#editUrl">
+                    Edit URL
+                  </a>
+                </h4>
+              </div>
+              <div id="editUrl" class="panel-collapse collapse">
+                <div class="panel-body">
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </td>
       </tr>
       <tr>
         <td><strong>Advert created</strong></td>
@@ -23,6 +60,18 @@
       <tr>
         <td><strong>Advert updated</strong></td>
         <td>{{ advert.updated }}</td>
+      </tr>
+      <tr>
+        <td><strong>Status</strong></td>
+        <td>
+          {% if advert.status == advert.ACTIVE %}
+            <span class="label label-success">{{ advert.get_status_display }}</span>
+          {% elif advert.status == advert.INACTIVE %}
+            <span class="label label-danger">{{ advert.get_status_display }}</span>
+          {% else %}
+            <span class="label label-warning">{{ advert.get_status_display }}</span>
+          {% endif %}
+        </td>
       </tr>
     </tbody>
   </table>
