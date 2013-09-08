@@ -121,7 +121,7 @@ def provider_request(request, provider_pk):
             messages.success(request, "Request has been sent!")
             return HttpResponseRedirect(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
         else:
-            messages.warning(request, "Form was not valid!")
+            messages.warning(request, "The request was not valid!")
     else:
         form = AdvertisementRequestForm()
 
