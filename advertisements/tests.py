@@ -160,6 +160,22 @@ class SuperuserViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    def test_can_view_own_request_page(self):
+        """
+        Test that an admin can view their own request page
+        """
+        response = self.client.get(reverse('advertisements.views.provider_request', args=[self.provider.pk]))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_view_other_request_pages(self):
+        """
+        Test that an admin can view other request pages
+        """
+        response = self.client.get(reverse('advertisements.views.provider_request', args=[self.provider2.pk]))
+
+        self.assertEqual(response.status_code, 200)
+
     def test_can_view_own_ad_statistics(self):
         """
         Test that an admin can view their own ad statistics
