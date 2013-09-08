@@ -6,12 +6,13 @@
 Welcome to Open Ads's documentation!
 ====================================
 
-Contents:
+Overview
+--------
 
 .. toctree::
    :maxdepth: 2
 
-
+   overview/index
 
 Indices and tables
 ==================
