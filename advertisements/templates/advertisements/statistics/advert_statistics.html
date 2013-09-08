@@ -16,8 +16,38 @@
       <tr>
         <td><strong>Advert link</strong></td>
         <td>
-          <a href="{{ advert.url }}">{{ advert.url }}</a>
-          {% crispy form %}
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#currentUrl">
+                    CurrentUrl
+                  </a>
+                </h4>
+              </div>
+              <div id="currentUrl" class="panel-collapse collapse in">
+                <div class="panel-body">
+                  <a href="{{ advert.url }}">{{ advert.url }}</a>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#editUrl">
+                    Edit URL
+                  </a>
+                </h4>
+              </div>
+              <div id="editUrl" class="panel-collapse collapse">
+                <div class="panel-body">
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
         </td>
       </tr>
       <tr>
