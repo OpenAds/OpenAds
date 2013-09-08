@@ -16,5 +16,3 @@ The sidebar ads are grouped in 4 in the following format:
     [Advertisement] [Advertisement] 
     [Advertisement] [Advertisement] 
 
-The group width total is 245px since there is a 4px margin inbetween the ads.
-
