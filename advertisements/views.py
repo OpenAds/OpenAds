@@ -2,8 +2,10 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from advertisements.models import Advertisement, Provider
 from advertisements.decorators import superuser_or_provider
+from advertisements.forms import AdvertisementURLForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 
 
 def click_register(request, ad_pk):
@@ -80,7 +82,20 @@ def view_advert_statistics(request, advert_pk):
             raise Http404
     advert = get_object_or_404(Advertisement, pk=advert_pk)
 
+    if request.method == "POST":
+        form = AdvertisementURLForm(request.POST)
+        if form.is_valid():
+            advert.url = form.cleaned_data["url"]
+            advert.save()
+            messages.success(request, "The URL for your advertisement has been updated")
+        else:
+            messages.warning(request, "The URL for your advertisement was not valid")
+
+    else:
+        form = AdvertisementURLForm({"url":advert.url})
+
     return render(request, 'advertisements/statistics/advert_statistics.html', {
         "advert": advert,
         "history": advert.click_history(history_days=10),
+        "form": form
     })
