@@ -141,6 +141,8 @@ INSTALLED_APPS = (
     'accounts',
 )
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 LOGIN_REDIRECT_URL = '/data/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
