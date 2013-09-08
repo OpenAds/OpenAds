@@ -24,6 +24,18 @@
         <td><strong>Advert updated</strong></td>
         <td>{{ advert.updated }}</td>
       </tr>
+      <tr>
+        <td><strong>Status</strong></td>
+        <td>
+          {% if advert.status == advert.ACTIVE %}
+            <span class="label label-success">{{ advert.get_status_display }}</span>
+          {% elif advert.status == advert.INACTIVE %}
+            <span class="label label-danger">{{ advert.get_status_display }}</span>
+          {% else %}
+            <span class="label label-warning">{{ advert.get_status_display }}</span>
+          {% endif %}
+        </td>
+      </tr>
     </tbody>
   </table>
 
