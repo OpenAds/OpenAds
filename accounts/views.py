@@ -18,6 +18,7 @@ def change_password(request):
             request.POST,
         )
         if form.is_valid():
+            messages.success(request, "Your password has been changed!")
             form.save()
         else:
             print form.errors
