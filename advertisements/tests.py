@@ -296,3 +296,48 @@ class AdvertisementViewTests(TestCase):
         response = self.client.get(reverse('advertisements.views.side_ads'))
 
         self.assertEqual(response.status_code, 200)
+
+
+class ClickRegisterTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
+        self.user.is_superuser = True
+        self.user.is_staff = True
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+            user=self.user,
+        )
+        self.provider.save()
+
+        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
+
+    def tearDown(self):
+        self.client.logout()
+        self.provider.delete()
+        self.user.delete()
+
+    def test_user_click_goes_to_url(self):
+        """
+        Test that the click redirects the user to the site url
+        """
+        for advert in self.provider_adverts:
+            response = self.client.get(reverse('advertisements.views.click_register', args=[advert.pk]), follow=True)
+
+            self.assertEqual(response.redirect_chain[0][0], advert.url)
+            self.assertEqual(response.redirect_chain[0][1], 302)
+
+    def test_click_increments_advertisement_clicks(self):
+        """
+        Test that the click on an ad increments the click total
+        """
+        for advert in self.provider_adverts:
+            self.assertEqual(advert.click_set.count(), 0)
+
+            for i in range(20):
+                response = self.client.get(
+                    reverse('advertisements.views.click_register', args=[advert.pk]),
+                    follow=True
+                )
+                self.assertEqual(advert.click_set.count(), i+1)
