@@ -14,6 +14,12 @@ class AdvertisementURLForm(forms.Form):
 
 
 class AdvertisementRequestForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AdvertisementRequestForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', 'Submit'))
+
     class Meta:
         model = Advertisement
         fields = ('ad_type', 'url', 'image')

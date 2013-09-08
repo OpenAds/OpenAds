@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from advertisements.models import Advertisement, Provider
 from advertisements.decorators import superuser_or_provider
-from advertisements.forms import AdvertisementURLForm
+from advertisements.forms import AdvertisementURLForm, AdvertisementRequestForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -97,5 +97,34 @@ def view_advert_statistics(request, advert_pk):
     return render(request, 'advertisements/statistics/advert_statistics.html', {
         "advert": advert,
         "history": advert.click_history(history_days=10),
+        "form": form
+    })
+
+
+@superuser_or_provider
+@login_required
+def provider_request(request, provider_pk):
+    if not request.user.is_superuser:
+        if request.user.provider.pk != long(provider_pk):
+            raise Http404
+
+    provider = get_object_or_404(Provider, pk=provider_pk)
+
+    if request.method == "POST":
+        advert = Advertisement(
+            provider=provider,
+            status=Advertisement.PENDING,
+        )
+        form = AdvertisementRequestForm(request.POST, request.FILES, instance=advert)
+        if form.is_valid():
+            advert = form.save()
+            messages.success(request, "Request has been sent!")
+            return HttpResponseRedirect(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
+        else:
+            messages.warning(request, "Form was not valid!")
+    else:
+        form = AdvertisementRequestForm()
+
+    return render(request, 'advertisements/statistics/request_form.html', {
         "form": form
     })
