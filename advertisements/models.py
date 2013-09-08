@@ -1,13 +1,32 @@
 from django.db import models
 import uuid
 import os
+from django.utils import timezone
+from datetime import timedelta
+from django.contrib.auth.models import User
 
 
 class Provider(models.Model):
     name = models.CharField(max_length=255)
+    user = models.OneToOneField(User, blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
+
+    def active_ads(self):
+        return self.advertisement_set.filter(enabled=True).count()
+
+    def inactive_ads(self):
+        return self.advertisement_set.filter(enabled=False).count()
+
+    def total_clicks(self):
+        click_count = 0
+        for advert in self.advertisement_set.filter(enabled=True):
+            click_count += advert.click_set.count()
+        return click_count
 
 
 def get_file_path(instance, filename):
@@ -53,6 +72,27 @@ class Advertisement(models.Model):
         click.save()
 
         return click
+
+    def is_side(self):
+        if self.ad_type == self.SIDE_AD:
+            return True
+        return False
+
+    def click_history(self, history_days=10):
+        today = timezone.now().date()
+        click_data = []
+        for days_back in reversed(xrange(history_days)):
+            date = today - timedelta(days=days_back)
+            clicks = self.click_set.filter(
+                date__year=date.year,
+                date__month=date.month,
+                date__day=date.day,
+            ).count()
+            click_data.append({
+                "date": date,
+                "clicks": clicks
+            })
+        return click_data
 
 
 class Click(models.Model):

@@ -1,0 +1,20 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+env:
+  - DJANGO=1.5
+  - DJANGO=1.5.1
+  - DJANGO=1.5.2
+install:
+  - pip install -q -r requirements.txt --use-mirrors
+  - pip install -q -r test_requirements.txt --use-mirrors
+  - pip install -q Django==$DJANGO --use-mirrors
+before_script:
+  - sudo apt-get install libjpeg-dev
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+  - pip install -I PIL
+script:
+  - python manage.py test

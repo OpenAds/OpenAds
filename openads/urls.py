@@ -8,6 +8,7 @@ from django.conf import settings
 urlpatterns = patterns('',
     url(r'^data/', include('advertisements.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('accounts.urls', namespace='accounts')),
 )
 
 if settings.DEBUG:

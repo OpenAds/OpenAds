@@ -23,6 +23,9 @@ DATABASES = {
     }
 }
 
+if os.getenv('TRAVIS', False):
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3'}}
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -131,10 +134,16 @@ INSTALLED_APPS = (
 
     # Packages
     'south',
+    'crispy_forms',
 
     # Custom apps
     'advertisements',
+    'accounts',
 )
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+LOGIN_REDIRECT_URL = '/data/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
@@ -145,6 +154,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "advertisements.context_processors.color_processor",
+    "django.core.context_processors.request",
 )
 
 # A sample logging configuration. The only tangible logging

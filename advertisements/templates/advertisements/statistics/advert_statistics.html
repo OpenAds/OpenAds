@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page-title %}{{ advert.get_ad_type_display }}{% endblock %}
+
+{% block content %}
+  {% if advert.is_side %}
+    <img border="0" width="125" height="125" src="{{ advert.image.url }}" style="margin: auto; display: block">
+  {% else %}
+    <img border="0" width="728" height="90" src="{{ advert.image.url }}" style="margin: auto; display: block">
+  {% endif %}
+
+  <table class="table table-bordered" style="margin-top: 20px">
+    <tbody>
+      <tr>
+        <td><strong>Advert link</strong></td>
+        <td><a href="{{ advert.url }}">{{ advert.url }}</a></td>
+      </tr>
+      <tr>
+        <td><strong>Advert created</strong></td>
+        <td>{{ advert.created }}</td>
+      </tr>
+      <tr>
+        <td><strong>Advert updated</strong></td>
+        <td>{{ advert.updated }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div id="statistics_charts"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+  <script type="text/javascript" src="{% static 'highcharts/highcharts.js' %}"></script>
+  <script type="text/javascript">
+    $(function () {
+        $('#statistics_charts').highcharts({
+            chart: {
+                type: 'spline'
+            },
+            title: {
+                text: 'Click statistics'
+            },
+            subtitle: {
+                text: 'Click statistics over the last 10 days'
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { 
+                    month: '%e. %b',
+                    year: '%b'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Amount of clicks (clicks)'
+                },
+                min: 0
+            },
+            tooltip: {
+                formatter: function() {
+                        return Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' clicks';
+                }
+            },
+
+            series: [{
+                name: 'Clicks',
+                data: [
+                  {% for stat in history %}
+
+                    [Date.UTC({{ stat.date.year }}, {{ stat.date.month|add:"-1" }}, {{ stat.date.day }}), {{ stat.clicks }}]
+                    {% if not forloop.last %},{% endif %}
+                  {% endfor %}
+                ]
+            }]
+        });
+    });
+  </script>
+{% endblock %}

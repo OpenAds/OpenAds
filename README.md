@@ -1,5 +1,7 @@
 # Open Advertisements
 
+[![Build Status](https://travis-ci.org/OpenAds/OpenAds.png?branch=feature/user_statistics)](https://travis-ci.org/OpenAds/OpenAds)
+
 An open source rotating advert system, specifically aimed ads related to hosting services. 
 It uses a rotational system where no two ads are shown together but also fails gracefully if
 there are not enough ads to be displayed.
