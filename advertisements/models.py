@@ -4,6 +4,7 @@ import os
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 
 class Provider(models.Model):
@@ -27,6 +28,9 @@ class Provider(models.Model):
         for advert in self.advertisement_set.filter(enabled=True):
             click_count += advert.click_set.count()
         return click_count
+
+    def get_absolute_url(self):
+        return reverse('advertisements.views.view_provider_statistics', args=[self.pk])
 
 
 def get_file_path(instance, filename):
@@ -93,6 +97,9 @@ class Advertisement(models.Model):
                 "clicks": clicks
             })
         return click_data
+
+    def get_absolute_url(self):
+        return reverse('advertisements.views.view_advert_statistics', args=[self.pk])
 
 
 class Click(models.Model):
