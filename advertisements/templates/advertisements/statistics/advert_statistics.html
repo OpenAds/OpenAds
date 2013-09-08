@@ -2,7 +2,10 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block page-title %}{{ advert.get_ad_type_display }}{% endblock %}
+{% block page-title %}
+  {{ advert.get_ad_type_display }}
+  <small>ID number: {{ advert.pk }}</small>
+{% endblock %}
 
 {% block content %}
   {% if advert.is_side %}
