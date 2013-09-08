@@ -17,6 +17,15 @@ Getting started
 
    installation/index
 
+Uninstalling
+------------
+
+.. toctree::
+   :maxdepth: 2
+
+   uninstalling/index
+
+
 Indices and tables
 ==================
 
