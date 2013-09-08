@@ -134,6 +134,7 @@ INSTALLED_APPS = (
 
     # Packages
     'south',
+    'crispy_forms',
 
     # Custom apps
     'advertisements',
