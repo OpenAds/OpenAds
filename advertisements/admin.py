@@ -4,13 +4,13 @@ from django.db.models import Count
 
 
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ('provider', 'ad_type', 'image_thumbnail', 'created', 'status', 'total_views')
+    list_display = ('provider', 'ad_type', 'image_thumbnail', 'created', 'status', 'total_clicks')
     date_hierarchy = 'created'
     list_filter = ('ad_type', 'status', 'created')
 
-    def total_views(self, obj):
+    def total_clicks(self, obj):
         return obj.click_set.count()
-    total_views.admin_order_field = 'clicks'
+    total_clicks.admin_order_field = 'clicks'
 
     def image_thumbnail(self, obj):
 
