@@ -6,5 +6,6 @@ urlpatterns = patterns('',
         "template_name": 'accounts/login_form.html',
 
     }, name='login'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout')
+    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
+    url(r'^change_password/$', 'accounts.views.change_password', name="change_password"),
 )
