@@ -36,6 +36,15 @@
           </ul>
         </div>
       </nav>
+
+      {% if messages %}
+          {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+      {% endif %}
+
       <h1 class="page-header">{% block page-title %}{% endblock %}</h1>
       {% block content %}
         No page content
