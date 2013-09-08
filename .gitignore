@@ -1,2 +1,4 @@
 dev.db
 media/resources/*
+
+docs/_build/*
