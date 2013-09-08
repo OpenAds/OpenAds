@@ -42,6 +42,26 @@ class ProviderViewTests(TestCase):
         self.assertIn('provider', response.context)
         self.assertEqual(response.context['provider'], self.provider)
 
+    def test_can_view_own_request_page(self):
+        """
+        Test that a user can view their own request page without problems
+        """
+        response = self.client.get(
+            reverse('advertisements.views.provider_request', args=[self.user.provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_not_view_other_request_page(self):
+        """
+        Test that a user can not view other request pages
+        """
+        response = self.client.get(
+            reverse('advertisements.views.provider_request', args=[self.provider2.pk])
+        )
+
+        self.assertEqual(response.status_code, 404)
+
     def test_can_not_view_other_statistics(self):
         """
         Test that a user can not view other peoples pages
@@ -208,6 +228,25 @@ class UserViewTests(TestCase):
         Test that a normal user without a provider can not view the admin overview page of all the providers
         """
         response = self.client.get(reverse('advertisements.views.providers_all'), follow=True)
+
+        self.assertEqual(len(response.redirect_chain), 2)
+
+        self.assertEqual(response.redirect_chain[0][0], 'http://testserver' + reverse('accounts:logout'))
+        self.assertEqual(response.redirect_chain[0][1], 302)
+
+        self.assertEqual(response.redirect_chain[1][0], 'http://testserver' + reverse('accounts:login'))
+        self.assertEqual(response.redirect_chain[1][1], 302)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_not_view_request_page(self):
+        """
+        Test that a normal user without a provider can not view the request ad page
+        """
+        response = self.client.get(
+            reverse('advertisements.views.provider_request', args=[self.provider.pk]),
+            follow=True
+        )
 
         self.assertEqual(len(response.redirect_chain), 2)
 
