@@ -87,9 +87,9 @@ def view_advert_statistics(request, advert_pk):
         if form.is_valid():
             advert.url = form.cleaned_data["url"]
             advert.save()
-            messages.success(request, "The URL for your advertisement has been updated")
+            messages.success(request, "The URL for your advertisement has been updated!")
         else:
-            messages.warning(request, "The URL for your advertisement was not valid")
+            messages.warning(request, "The URL for your advertisement was not valid!")
 
     else:
         form = AdvertisementURLForm({"url":advert.url})
