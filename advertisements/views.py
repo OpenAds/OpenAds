@@ -9,14 +9,6 @@ from django.contrib import messages
 from django.core.signing import TimestampSigner, BadSignature
 
 
-def click_register(request, ad_pk):
-    advert = get_object_or_404(Advertisement, pk=ad_pk)
-
-    advert.clicked()
-
-    return HttpResponseRedirect(advert.url)
-
-
 def advanced_click_register(request, ad_identifier):
     signer = TimestampSigner()
     try:
