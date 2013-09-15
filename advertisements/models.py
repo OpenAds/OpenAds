@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.core.signing import TimestampSigner
 
 
 class Provider(models.Model):
@@ -110,6 +111,12 @@ class Advertisement(models.Model):
 
     def get_absolute_url(self):
         return reverse('advertisements.views.view_advert_statistics', args=[self.pk])
+
+    def get_signed_link(self):
+        signer = TimestampSigner()
+        advert_signed = signer.sign(self.pk)
+
+        return reverse('advertisements.views.advanced_click_register', args=[advert_signed])
 
 
 class Click(models.Model):

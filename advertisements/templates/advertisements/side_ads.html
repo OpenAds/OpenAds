@@ -2,7 +2,7 @@
 {% block content %}
   <div class="container">
     {% for advert in adverts %}
-      <a target="_blank" href="{% url 'advertisements.views.click_register' advert.pk %}">
+      <a target="_blank" href="{{ advert.get_signed_link }}">
         <img border="0" width="125" height="125" src="{{ advert.image.url }}" class="side-image">
       </a>
     {% endfor %}

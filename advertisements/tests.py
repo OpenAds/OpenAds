@@ -366,7 +366,7 @@ class ClickRegisterTest(TestCase):
         )
         self.provider.save()
 
-        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
+        self.provider_adverts = mommy.make(Advertisement, _quantity=200, provider=self.provider)
 
     def tearDown(self):
         self.provider.delete()
@@ -377,7 +377,7 @@ class ClickRegisterTest(TestCase):
         Test that the click redirects the user to the site url
         """
         for advert in self.provider_adverts:
-            response = self.client.get(reverse('advertisements.views.click_register', args=[advert.pk]), follow=True)
+            response = self.client.get(advert.get_signed_link(), follow=True)
 
             self.assertEqual(response.redirect_chain[0][0], advert.url)
             self.assertEqual(response.redirect_chain[0][1], 302)
@@ -391,7 +391,7 @@ class ClickRegisterTest(TestCase):
 
             for i in range(20):
                 response = self.client.get(
-                    reverse('advertisements.views.click_register', args=[advert.pk]),
+                    advert.get_signed_link(),
                     follow=True
                 )
                 self.assertEqual(advert.click_set.count(), i+1)
