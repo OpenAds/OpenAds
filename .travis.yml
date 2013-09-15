@@ -6,6 +6,8 @@ env:
   - DJANGO=1.5
   - DJANGO=1.5.1
   - DJANGO=1.5.2
+  - DJANGO=1.5.3
+  - DJANGO=1.5.4
 install:
   - pip install -q -r requirements.txt --use-mirrors
   - pip install -q -r test_requirements.txt --use-mirrors
