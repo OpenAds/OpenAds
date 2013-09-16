@@ -553,3 +553,21 @@ class ProviderAdvancedViewTests(LiveServerTestCase):
             "{0} advertisements in rotation".format(20),
             self.driver.find_element_by_css_selector("h1.page-header").text
         )
+
+    def test_advertisement_page_has_all_data(self):
+        """
+        Test that the advertisement page has all the correct data
+        """
+
+        for advert in self.provider_adverts:
+            self.open(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
+
+            self.assertIn(
+                "ID number: {0}".format(advert.pk),
+                self.driver.find_element_by_css_selector("h1.page-header").text,
+            )
+            self.driver.find_element_by_css_selector("img")
+            self.assertEqual("Active", self.driver.find_element_by_xpath("//td[2]/span").text)
+            self.assertEqual(advert.url, self.driver.find_element_by_link_text(advert.url).text)
+            self.driver.find_element_by_link_text("Edit URL").click()
+            self.assertEqual(advert.url, self.driver.find_element_by_id("id_url").get_attribute("value"))

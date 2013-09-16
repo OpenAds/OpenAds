@@ -31,4 +31,4 @@ before_script:
   - mysql -e 'create database openads_test;'
   - psql -c 'create database openads_test;' -U postgres
 script:
-  - python manage.py test
+    - python manage.py test -v 2
