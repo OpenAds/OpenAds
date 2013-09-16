@@ -14,8 +14,8 @@ env:
     - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=sqlite
     - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=mysql
     - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=postgresql
-    allow_failures:
-        - env: DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/
+  allow_failures:
+      - env: DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/
 install:
   - pip install -q -r requirements.txt --use-mirrors
   - pip install -q -r test_requirements.txt --use-mirrors
