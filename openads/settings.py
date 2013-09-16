@@ -25,6 +25,29 @@ DATABASES = {
 
 if os.getenv('TRAVIS', False):
     DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3'}}
+    database_type = os.getenv('DB', 'sqlite')
+    if database_type == 'mysql':
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.mysql',
+                'NAME': 'openads_test',
+                'USER': 'travis',
+                'PASSWORD': '',
+                'HOST': 'localhost',
+                'PORT': '',
+            }
+        }
+    elif database_type == 'postgresql':
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': 'openads_test',
+                'USER': 'postgres',
+                'PASSWORD': '',
+                'HOST': 'localhost',
+                'PORT': '',
+            }
+        }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts

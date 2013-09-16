@@ -3,15 +3,24 @@ python:
   - "2.6"
   - "2.7"
 env:
-  - DJANGO=1.5
-  - DJANGO=1.5.1
-  - DJANGO=1.5.2
-  - DJANGO=1.5.3
-  - DJANGO=1.5.4
+  - DJANGO=Django==1.5 DB=sqlite
+  - DJANGO=Django==1.5.1 DB=sqlite
+  - DJANGO=Django==1.5.2 DB=sqlite
+  - DJANGO=Django==1.5.3 DB=sqlite
+  - DJANGO=Django==1.5.4 DB=sqlite
+  - DJANGO=Django==1.5.4 DB=mysql
+  - DJANGO=Django==1.5.4 DB=postgresql
+  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=sqlite
+  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=mysql
+  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=postgresql
+
+matrix:
+  allow_failures:
+    - env: DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/
 install:
   - pip install -q -r requirements.txt --use-mirrors
   - pip install -q -r test_requirements.txt --use-mirrors
-  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install -q $DJANGO --use-mirrors
 before_script:
   - python -c "import django; print(django.get_version())"
   - sudo apt-get install libjpeg-dev
@@ -19,5 +28,7 @@ before_script:
   - sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
   - sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
   - pip install -I PIL
+  - mysql -e 'create database openads_test;'
+  - psql -c 'create database openads_test;' -U postgres
 script:
   - python manage.py test
