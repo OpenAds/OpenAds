@@ -470,6 +470,9 @@ class AdvertisementAdvancedViewTests(LiveServerTestCase):
         self.driver.get("%s%s" % (self.live_server_url, url))
 
     def test_side_ad_display(self):
+        """
+        Test that the side ads display properly
+        """
         self.open(reverse('advertisements.views.side_ads'))
 
         self.assertEqual(len(self.driver.find_elements_by_xpath("//a")), 4)
@@ -485,6 +488,9 @@ class AdvertisementAdvancedViewTests(LiveServerTestCase):
         self.assertNotEqual(self.driver.find_element_by_xpath("//a[4]").get_attribute("href"), '')
 
     def test_top_ad_display(self):
+        """
+        Test that the top ad displays properly
+        """
         self.open(reverse('advertisements.views.top_ad'))
 
         self.assertEqual(len(self.driver.find_elements_by_xpath("//a")), 1)
@@ -527,4 +533,7 @@ class ProviderAdvancedViewTests(LiveServerTestCase):
         )
 
     def test_can_login(self):
+        """
+        Test that the user can login
+        """
         pass
