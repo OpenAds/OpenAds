@@ -451,8 +451,32 @@ class AdvertisementAdvancedViewTests(LiveServerTestCase):
     def setUp(self):
         self.driver = PhantomJS()
 
+        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+            user=self.user,
+        )
+        self.provider.save()
+
+        self.provider_adverts = mommy.make(Advertisement, _quantity=20, provider=self.provider)
+
     def tearDown(self):
         self.driver.quit()
 
+    def open(self, url):
+        self.driver.get("%s%s" % (self.live_server_url, url))
+
+    def test_side_ad_display(self):
+        self.open(reverse('advertisements.views.side_ads'))
+
+        self.driver.find_element_by_xpath("//a[1]/img")
+        self.driver.find_element_by_xpath("//a[2]/img")
+        self.driver.find_element_by_xpath("//a[3]/img")
+        self.driver.find_element_by_xpath("//a[4]/img")
+
     def test_top_ad_display(self):
-        self.driver.get(self.live_server_url)
+        self.open(reverse('advertisements.views.top_ad'))
+
+        self.driver.find_element_by_xpath("//a[1]/img")
