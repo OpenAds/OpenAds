@@ -14,3 +14,4 @@ model-mommy==1.1
 paramiko==1.11.0
 pycrypto==2.6
 django-htmlmin
+pytz==2013d
