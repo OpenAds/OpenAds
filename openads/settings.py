@@ -40,7 +40,7 @@ if os.getenv('TRAVIS', False):
     elif database_type == 'postgresql':
         DATABASES = {
             'default': {
-                'ENGINE': 'django.db.backends.postgresql',
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
                 'NAME': 'openads_test',
                 'USER': 'postgres',
                 'PASSWORD': '',
