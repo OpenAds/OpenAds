@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.core.signing import TimestampSigner, BadSignature
+from htmlmin.decorators import minified_response
 
 
 def advanced_click_register(request, ad_identifier):
@@ -22,6 +23,7 @@ def advanced_click_register(request, ad_identifier):
     return HttpResponseRedirect(advert.url)
 
 
+@minified_response
 def top_ad(request):
     if not Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).exists():
         return HttpResponse("No adverts") # TODO: Placeholder
@@ -32,6 +34,7 @@ def top_ad(request):
     })
 
 
+@minified_response
 def side_ads(request):
     if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
         return HttpResponse("No adverts")  # TODO: Placeholder

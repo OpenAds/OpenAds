@@ -545,11 +545,11 @@ class ProviderAdvancedViewTests(LiveServerTestCase):
         self.open(reverse('advertisements.views.view_provider_statistics', args=[self.provider.pk]))
 
         self.assertEqual("Open Ads", self.driver.title)
-        self.assertContains(
-            self.driver.find_element_by_css_selector("h1.page-header").text,
-            "{0} advertisements".format(self.provider.name)
+        self.assertIn(
+            "{0} advertisements".format(self.provider.name),
+            self.driver.find_element_by_css_selector("h1.page-header").text
         )
-        self.assertContains(
-            self.driver.find_element_by_css_selector("h1.page-header").text,
-            "{0} advertisements in rotation".format(20)
+        self.assertIn(
+            "{0} advertisements in rotation".format(20),
+            self.driver.find_element_by_css_selector("h1.page-header").text
         )
