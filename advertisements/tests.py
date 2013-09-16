@@ -537,3 +537,15 @@ class ProviderAdvancedViewTests(LiveServerTestCase):
         Test that the user can login
         """
         pass
+
+    def test_provider_page_has_all_data(self):
+        """
+        Test that the provider statistics page has all the correct data
+        """
+        self.open(reverse('advertisements.views.view_provider_statistics', args=[self.provider.pk]))
+
+        self.assertEqual("Open Ads", self.driver.title)
+        self.assertEqual(
+            "{0} advertisements {1} advertisements in rotation".format(self.provider.name, 20),
+            self.driver.find_element_by_css_selector("h1.page-header").text
+        )
