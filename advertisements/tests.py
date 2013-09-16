@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, LiveServerTestCase
 from django.contrib.auth.models import User
 from advertisements.models import User, Provider, Advertisement
 from django.core.urlresolvers import reverse
@@ -441,3 +441,18 @@ class ProviderCountMethodTests(TestCase):
         Test that the inactive_ads method on a provider returns the correct amount
         """
         self.assertEqual(self.provider.inactive_ads(), 20)
+
+
+# Web based tests
+from selenium.webdriver import PhantomJS
+
+
+class AdvertisementAdvancedViewTests(LiveServerTestCase):
+    def setUp(self):
+        self.driver = PhantomJS()
+
+    def tearDown(self):
+        self.driver.quit()
+
+    def test_top_ad_display(self):
+        self.driver.get(self.live_server_url)
