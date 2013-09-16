@@ -3,11 +3,11 @@ python:
   - "2.6"
   - "2.7"
 env:
-  - DJANGO=1.5
-  - DJANGO=1.5.1
-  - DJANGO=1.5.2
-  - DJANGO=1.5.3
-  - DJANGO=1.5.4
+  - DJANGO=1.5 DB=mysql
+  - DJANGO=1.5.1 DB=postgresql
+  - DJANGO=1.5.2 DB=sqlite
+  - DJANGO=1.5.3 DB=mysql
+  - DJANGO=1.5.4 DB=postgresql
 install:
   - pip install -q -r requirements.txt --use-mirrors
   - pip install -q -r test_requirements.txt --use-mirrors
@@ -19,5 +19,7 @@ before_script:
   - sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
   - sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
   - pip install -I PIL
+  - mysql -e 'create database openads_test;'
+  - psql -c 'create database openads_test;' -U postgres
 script:
   - python manage.py test
