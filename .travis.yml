@@ -3,23 +3,24 @@ python:
   - "2.6"
   - "2.7"
 env:
-  matrix:
-    - DJANGO=1.5 DB=sqlite
-    - DJANGO=1.5.1 DB=sqlite
-    - DJANGO=1.5.2 DB=sqlite
-    - DJANGO=1.5.3 DB=sqlite
-    - DJANGO=1.5.4 DB=sqlite
-    - DJANGO=1.5.4 DB=mysql
-    - DJANGO=1.5.4 DB=postgresql
-    - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=sqlite
-    - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=mysql
-    - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=postgresql
+  - DJANGO=Django==1.5 DB=sqlite
+  - DJANGO=Django==1.5.1 DB=sqlite
+  - DJANGO=Django==1.5.2 DB=sqlite
+  - DJANGO=Django==1.5.3 DB=sqlite
+  - DJANGO=Django==1.5.4 DB=sqlite
+  - DJANGO=Django==1.5.4 DB=mysql
+  - DJANGO=Django==1.5.4 DB=postgresql
+  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=sqlite
+  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=mysql
+  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=postgresql
+
+matrix:
   allow_failures:
-      - env: DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/
+    - env: DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/
 install:
   - pip install -q -r requirements.txt --use-mirrors
   - pip install -q -r test_requirements.txt --use-mirrors
-  - pip install -q Django==$DJANGO --use-mirrors
+  - pip install -q $DJANGO --use-mirrors
 before_script:
   - python -c "import django; print(django.get_version())"
   - sudo apt-get install libjpeg-dev
