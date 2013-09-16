@@ -471,12 +471,21 @@ class AdvertisementAdvancedViewTests(LiveServerTestCase):
     def test_side_ad_display(self):
         self.open(reverse('advertisements.views.side_ads'))
 
+        self.assertEqual(len(self.driver.find_elements_by_xpath("//a")), 4)
+
         self.driver.find_element_by_xpath("//a[1]/img")
         self.driver.find_element_by_xpath("//a[2]/img")
         self.driver.find_element_by_xpath("//a[3]/img")
         self.driver.find_element_by_xpath("//a[4]/img")
 
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[1]").get_attribute("href"), '')
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[2]").get_attribute("href"), '')
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[3]").get_attribute("href"), '')
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[4]").get_attribute("href"), '')
+
     def test_top_ad_display(self):
         self.open(reverse('advertisements.views.top_ad'))
 
-        self.driver.find_element_by_xpath("//a[1]/img")
+        self.assertEqual(len(self.driver.find_elements_by_xpath("//a")), 1)
+        self.driver.find_element_by_xpath("//a/img")
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a").get_attribute("href"), '')
