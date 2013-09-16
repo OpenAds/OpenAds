@@ -2,6 +2,7 @@ from django.test import TestCase, LiveServerTestCase
 from django.contrib.auth.models import User
 from advertisements.models import User, Provider, Advertisement
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from model_mommy import mommy
 
 
@@ -489,3 +490,41 @@ class AdvertisementAdvancedViewTests(LiveServerTestCase):
         self.assertEqual(len(self.driver.find_elements_by_xpath("//a")), 1)
         self.driver.find_element_by_xpath("//a/img")
         self.assertNotEqual(self.driver.find_element_by_xpath("//a").get_attribute("href"), '')
+
+
+class ProviderAdvancedViewTests(LiveServerTestCase):
+    def setUp(self):
+        self.driver = PhantomJS()
+
+        self.user = User.objects.create_user('admin', 'test@example.com', 'password')
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+            user=self.user,
+        )
+        self.provider.save()
+
+        self.provider_adverts = mommy.make(Advertisement, _quantity=20, provider=self.provider)
+
+        self.login()
+
+    def tearDown(self):
+        self.driver.quit()
+
+    def open(self, url):
+        self.driver.get("%s%s" % (self.live_server_url, url))
+
+    def login(self):
+        self.open(settings.LOGIN_URL)
+        self.driver.find_element_by_id("id_username").send_keys("admin")
+        self.driver.find_element_by_id("id_password").send_keys("password")
+        self.driver.find_element_by_css_selector("button.btn.btn-default").click()
+
+        self.assertEqual(
+            self.driver.current_url,
+            self.live_server_url + reverse('advertisements.views.view_provider_statistics', args=[self.provider.pk]),
+        )
+
+    def test_can_login(self):
+        pass
