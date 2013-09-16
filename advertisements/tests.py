@@ -1,7 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, LiveServerTestCase
 from django.contrib.auth.models import User
 from advertisements.models import User, Provider, Advertisement
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from model_mommy import mommy
 
 
@@ -441,3 +442,110 @@ class ProviderCountMethodTests(TestCase):
         Test that the inactive_ads method on a provider returns the correct amount
         """
         self.assertEqual(self.provider.inactive_ads(), 20)
+
+
+# Web based tests
+from selenium.webdriver import PhantomJS
+
+
+class AdvertisementAdvancedViewTests(LiveServerTestCase):
+    def setUp(self):
+        self.driver = PhantomJS()
+
+        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+            user=self.user,
+        )
+        self.provider.save()
+
+        self.provider_adverts = mommy.make(Advertisement, _quantity=20, provider=self.provider)
+
+    def tearDown(self):
+        self.driver.quit()
+
+    def open(self, url):
+        self.driver.get("%s%s" % (self.live_server_url, url))
+
+    def test_side_ad_display(self):
+        """
+        Test that the side ads display properly
+        """
+        self.open(reverse('advertisements.views.side_ads'))
+
+        self.assertEqual(len(self.driver.find_elements_by_xpath("//a")), 4)
+
+        self.driver.find_element_by_xpath("//a[1]/img")
+        self.driver.find_element_by_xpath("//a[2]/img")
+        self.driver.find_element_by_xpath("//a[3]/img")
+        self.driver.find_element_by_xpath("//a[4]/img")
+
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[1]").get_attribute("href"), '')
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[2]").get_attribute("href"), '')
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[3]").get_attribute("href"), '')
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a[4]").get_attribute("href"), '')
+
+    def test_top_ad_display(self):
+        """
+        Test that the top ad displays properly
+        """
+        self.open(reverse('advertisements.views.top_ad'))
+
+        self.assertEqual(len(self.driver.find_elements_by_xpath("//a")), 1)
+        self.driver.find_element_by_xpath("//a/img")
+        self.assertNotEqual(self.driver.find_element_by_xpath("//a").get_attribute("href"), '')
+
+
+class ProviderAdvancedViewTests(LiveServerTestCase):
+    def setUp(self):
+        self.driver = PhantomJS()
+
+        self.user = User.objects.create_user('admin', 'test@example.com', 'password')
+        self.user.save()
+
+        self.provider = Provider(
+            name='provider',
+            user=self.user,
+        )
+        self.provider.save()
+
+        self.provider_adverts = mommy.make(Advertisement, _quantity=20, provider=self.provider)
+
+        self.login()
+
+    def tearDown(self):
+        self.driver.quit()
+
+    def open(self, url):
+        self.driver.get("%s%s" % (self.live_server_url, url))
+
+    def login(self):
+        self.open(settings.LOGIN_URL)
+        self.driver.find_element_by_id("id_username").send_keys("admin")
+        self.driver.find_element_by_id("id_password").send_keys("password")
+        self.driver.find_element_by_css_selector("button.btn.btn-default").click()
+
+        self.assertEqual(
+            self.driver.current_url,
+            self.live_server_url + reverse('advertisements.views.view_provider_statistics', args=[self.provider.pk]),
+        )
+
+    def test_can_login(self):
+        """
+        Test that the user can login
+        """
+        pass
+
+    def test_provider_page_has_all_data(self):
+        """
+        Test that the provider statistics page has all the correct data
+        """
+        self.open(reverse('advertisements.views.view_provider_statistics', args=[self.provider.pk]))
+
+        self.assertEqual("Open Ads", self.driver.title)
+        self.assertEqual(
+            "{0} advertisements {1} advertisements in rotation".format(self.provider.name, 20),
+            self.driver.find_element_by_css_selector("h1.page-header").text
+        )
