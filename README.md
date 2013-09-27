@@ -16,3 +16,5 @@ The sidebar ads are grouped in 4 in the following format:
     [Advertisement] [Advertisement] 
     [Advertisement] [Advertisement] 
 
+Documentation can be found at [https://open-advertising.readthedocs.org/](https://open-advertising.readthedocs.org/).
+
