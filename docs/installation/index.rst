@@ -173,7 +173,7 @@ The site is now installed, and you can navigate to your domain name that you set
 and use the site. A demo user has been installed with an insecure password which you must change as soon
 as you login. The demo user's details are:
 
-| **Username:** user
+| **Username:** admin
 | **Password:** pass
 
 Example configuration
