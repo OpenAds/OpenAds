@@ -118,6 +118,9 @@ class Advertisement(models.Model):
 
         return reverse('advertisements.views.advanced_click_register', args=[advert_signed])
 
+    def total_clicks(self):
+        return self.click_set.count()
+
 
 class Click(models.Model):
     ad = models.ForeignKey(Advertisement)
