@@ -186,22 +186,22 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
         'standard': {
             'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
             'datefmt' : "%d/%b/%Y %H:%M:%S"
         },
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
     },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
+        },
         'logfile': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -210,8 +210,10 @@ LOGGING = {
             'backupCount': 2,
             'formatter': 'standard',
         },
+    },
+    'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['mail_admins', 'logfile'],
             'level': 'ERROR',
             'propagate': True,
         },

@@ -3,3 +3,4 @@ media/resources/*
 
 docs/_build/*
 ghostdriver.log
+errorlog.log
