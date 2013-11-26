@@ -33,6 +33,7 @@ class AdvertisementQueryset(QuerySet):
 
         return adverts
 
+
 class AdvertisementManager(models.Manager):
     def get_queryset(self):
         return AdvertisementQueryset(model=self.model, using=self._db)
