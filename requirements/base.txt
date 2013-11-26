@@ -8,4 +8,4 @@ Sphinx==1.1.3
 django-crispy-forms
 docutils
 pytz
-
+django-braces
