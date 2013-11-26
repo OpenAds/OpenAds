@@ -8,6 +8,8 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.core.signing import TimestampSigner, BadSignature
 from django.views.generic.base import View, TemplateView
+from django.core.exceptions import PermissionDenied
+from braces.views import LoginRequiredMixin
 
 
 class ClickRegisterView(View):
@@ -62,6 +64,34 @@ class SideAdView(TemplateView):
         if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
             return HttpResponse("No adverts")  # TODO: Placeholder
         return super(SideAdView, self).get(request, *args, **kwargs)
+
+
+class ProviderAccessPermissionMixin(LoginRequiredMixin):
+    def __init__(self, *args, **kwargs):
+        super(ProviderAccessPermissionMixin, self).__init__(*args, **kwargs)
+
+        self.is_superuser = False
+        self.provider = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.is_superuser = request.user.is_superuser
+
+        # If the kwarg of provider_pk is in kwargs, an admin is trying to access the page
+        if "provider_pk" in kwargs:
+            if not self.is_superuser:
+                # The user is not valid and should not be allowed access
+                raise PermissionDenied
+            self.provider = get_object_or_404(Provider, pk=kwargs["provider_pk"])
+        else:
+            # This is a provider accessing their own page
+            if hasattr(request.user, 'provider'):
+                # The user is a provider (and has one assigned to their account)
+                self.provider = request.user.provider
+            else:
+                # The user is just a normal user, and should not get access
+                raise PermissionDenied
+
+        return super(ProviderAccessPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
 @superuser_or_provider
