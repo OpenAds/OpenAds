@@ -8,9 +8,9 @@ from StringIO import StringIO
 
 
 site_settings = {
-    "settings_module": 'openads.settings',
-    "settings_local": 'openads/local_settings.py',
-    "application_name": 'openads',
+    "settings_module": 'OpenAds.settings',
+    "settings_local": 'OpenAds/local_settings.py',
+    "application_name": 'OpenAds',
     "git_location": "https://github.com/OpenAds/OpenAds.git",
     "git_branch": "develop",
 

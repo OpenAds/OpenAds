@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'openads', u'Open Ads Documentation',
+    ('index', 'OpenAds', u'Open Ads Documentation',
      [u'Open Ads Team'], 1)
 ]
 
