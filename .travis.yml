@@ -18,8 +18,7 @@ matrix:
   allow_failures:
     - env: DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/
 install:
-  - pip install -q -r requirements.txt --use-mirrors
-  - pip install -q -r test_requirements.txt --use-mirrors
+  - pip install -q -r requirements/all.txt --use-mirrors
   - pip install -q $DJANGO --use-mirrors
 before_script:
   - python -c "import django; print(django.get_version())"
