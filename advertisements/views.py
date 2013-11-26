@@ -44,14 +44,24 @@ class TopAdView(TemplateView):
         return super(TopAdView, self).get(request, *args, **kwargs)
 
 
-def side_ads(request):
-    if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
-        return HttpResponse("No adverts")  # TODO: Placeholder
-    adverts = Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).get_sample_random()
+class SideAdView(TemplateView):
+    template_name = "advertisements/side_ads.html"
 
-    return render(request, 'advertisements/side_ads.html', {
-        "adverts": adverts,
-    })
+    def get_context_data(self, **kwargs):
+        context = super(SideAdView, self).get_context_data(**kwargs)
+
+        context['adverts'] = Advertisement.objects.filter(
+            ad_type=Advertisement.SIDE_AD,
+            status=Advertisement.ACTIVE
+        ).get_sample_random()
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+
+        if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
+            return HttpResponse("No adverts")  # TODO: Placeholder
+        return super(SideAdView, self).get(request, *args, **kwargs)
 
 
 @superuser_or_provider
