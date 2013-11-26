@@ -7,19 +7,21 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.core.signing import TimestampSigner, BadSignature
+from django.views.generic.base import View
 
 
-def advanced_click_register(request, ad_identifier):
-    signer = TimestampSigner()
-    try:
-        ad_pk = signer.unsign(ad_identifier)
-    except BadSignature:
-        raise Http404
-    advert = get_object_or_404(Advertisement, pk=ad_pk)
+class ClickRegisterView(View):
+    def get(self, request, *args, **kwargs):
+        signer = TimestampSigner()
+        try:
+            ad_pk = signer.unsign(kwargs["ad_identifier"])
+        except BadSignature:
+            raise Http404
+        advert = get_object_or_404(Advertisement, pk=ad_pk)
 
-    advert.clicked()
+        advert.clicked()
 
-    return HttpResponseRedirect(advert.url)
+        return HttpResponseRedirect(advert.url)
 
 
 def top_ad(request):

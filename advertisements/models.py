@@ -116,7 +116,7 @@ class Advertisement(models.Model):
         signer = TimestampSigner()
         advert_signed = signer.sign(self.pk)
 
-        return reverse('advertisements.views.advanced_click_register', args=[advert_signed])
+        return reverse('advert:go', args=[advert_signed])
 
     def total_clicks(self):
         return self.click_set.count()

@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, include, url
+from .views import ClickRegisterView
 
 urlpatterns = patterns('advertisements.views',
-    url(r'^c/(?P<ad_identifier>\d+:.+)/$', 'advanced_click_register'),
+    url(r'^c/(?P<ad_identifier>\d+:.+)/$', ClickRegisterView.as_view(), name='go'),
     url(r'^top/$', 'top_ad'),
     url(r'^sides/$', 'side_ads'),
 
