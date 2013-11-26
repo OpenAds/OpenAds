@@ -1,4 +1,5 @@
 -r base.txt
-coverage==3.6
+coverage
 selenium
 psycopg2
+model-mommy
