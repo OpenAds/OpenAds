@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # Only mysql support
-        'NAME': 'adverts',
+        'NAME': 'adverts2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
