@@ -7,6 +7,10 @@ from django.db.models.query import QuerySet
 class AdvertisementQueryset(QuerySet):
     def get_single_random(self):
         count = self.aggregate(count=Count('id'))['count']
+
+        if not count:
+            return None
+
         random_index = randint(0, count - 1)
         return self.all()[random_index]
 
