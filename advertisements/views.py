@@ -98,7 +98,7 @@ class ProviderAccessPermissionMixin(LoginRequiredMixin):
 @login_required
 def go_to_providers(request):
     if request.user.is_superuser:
-        return HttpResponseRedirect(reverse('advert:provider:list'))
+        return HttpResponseRedirect(reverse('advert:admin:list'))
     else:
         return HttpResponseRedirect(
             reverse('advert:provider:stats', args=[request.user.provider.pk])
@@ -130,6 +130,18 @@ def view_provider_statistics(request, provider_pk):
         "inactive_ads": provider.advertisement_set.filter(status=Advertisement.INACTIVE),
         "pending_ads": provider.advertisement_set.filter(status=Advertisement.PENDING),
     })
+
+
+class ProviderStatisticsView(ProviderAccessPermissionMixin, TemplateView):
+    template_name = "advertisements/statistics/provider_statistics.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProviderStatisticsView, self).get_context_data(**kwargs)
+
+        context["provider"] = self.provider
+        context["active_ads"] = self.provider.advertisement_set.filter(status=Advertisement.ACTIVE),
+        context["inactive_ads"] = self.provider.advertisement_set.filter(status=Advertisement.INACTIVE),
+        context["pending_ads"] = self.provider.advertisement_set.filter(status=Advertisement.PENDING),
 
 
 @superuser_or_provider

@@ -24,8 +24,8 @@
           <ul class="nav navbar-nav">
             <li><a href="{% url 'advert:providers' %}">Home</a></li>
             {% if request.user.is_superuser %}
-            <li class="{% active_nav request 'advert:provider:list' %}">
-              <a href="{% url 'advert:provider:list' %}">Providers</a>
+            <li class="{% active_nav request 'advert:admin:list' %}">
+              <a href="{% url 'advert:admin:list' %}">Providers</a>
             </li>
             <li><a href="{% url 'admin:index' %}">Administration</a></li>
             {% endif %}
