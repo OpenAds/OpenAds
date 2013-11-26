@@ -9,6 +9,5 @@ django-crispy-forms
 docutils
 mock==1.0.1
 model-mommy==1.1
-django-htmlmin
 pytz
 
