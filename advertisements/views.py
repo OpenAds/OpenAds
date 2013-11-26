@@ -37,7 +37,7 @@ def top_ad(request):
 def side_ads(request):
     if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
         return HttpResponse("No adverts")  # TODO: Placeholder
-    adverts = Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).order_by('?')[:4]
+    adverts = Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).get_sample_random()
 
     return render(request, 'advertisements/side_ads.html', {
         "adverts": adverts,
