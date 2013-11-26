@@ -27,7 +27,7 @@ class ClickRegisterView(View):
 def top_ad(request):
     if not Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).exists():
         return HttpResponse("No adverts") # TODO: Placeholder
-    advert = Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).order_by('?')[0]
+    advert = Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).get_single_random()
 
     return render(request, 'advertisements/top_ad.html', {
         "advert": advert,
