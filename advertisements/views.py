@@ -68,10 +68,10 @@ class SideAdView(TemplateView):
 @login_required
 def go_to_providers(request):
     if request.user.is_superuser:
-        return HttpResponseRedirect(reverse('advertisements.views.providers_all'))
+        return HttpResponseRedirect(reverse('advert:provider:list'))
     else:
         return HttpResponseRedirect(
-            reverse('advertisements.views.view_provider_statistics', args=[request.user.provider.pk])
+            reverse('advert:provider:stats', args=[request.user.provider.pk])
         )
 
 

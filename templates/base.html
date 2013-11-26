@@ -17,15 +17,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'advertisements.views.go_to_providers' %}">Open Ads</a>
+          <a class="navbar-brand" href="{% url 'advert:providers' %}">Open Ads</a>
         </div>
 
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{% url 'advertisements.views.go_to_providers' %}">Home</a></li>
+            <li><a href="{% url 'advert:providers' %}">Home</a></li>
             {% if request.user.is_superuser %}
-            <li class="{% active_nav request 'advertisements.views.providers_all' %}">
-              <a href="{% url 'advertisements.views.providers_all' %}">Providers</a>
+            <li class="{% active_nav request 'advert:provider:list' %}">
+              <a href="{% url 'advert:provider:list' %}">Providers</a>
             </li>
             <li><a href="{% url 'admin:index' %}">Administration</a></li>
             {% endif %}
