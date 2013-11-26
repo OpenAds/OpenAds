@@ -1,9 +1,9 @@
 from django.conf.urls import patterns, include, url
-from .views import ClickRegisterView
+from .views import ClickRegisterView, TopAdView
 
 urlpatterns = patterns('advertisements.views',
     url(r'^c/(?P<ad_identifier>\d+:.+)/$', ClickRegisterView.as_view(), name='go'),
-    url(r'^top/$', 'top_ad'),
+    url(r'^top/$', TopAdView.as_view(), name='top'),
     url(r'^sides/$', 'side_ads'),
 
     url(r'^providers/$', 'providers_all'),

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.core.signing import TimestampSigner, BadSignature
-from django.views.generic.base import View
+from django.views.generic.base import View, TemplateView
 
 
 class ClickRegisterView(View):
@@ -24,14 +24,24 @@ class ClickRegisterView(View):
         return HttpResponseRedirect(advert.url)
 
 
-def top_ad(request):
-    if not Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).exists():
-        return HttpResponse("No adverts") # TODO: Placeholder
-    advert = Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).get_single_random()
+class TopAdView(TemplateView):
+    template_name = "advertisements/top_ad.html"
 
-    return render(request, 'advertisements/top_ad.html', {
-        "advert": advert,
-    })
+    def get_context_data(self, **kwargs):
+        context = super(TopAdView, self).get_context_data(**kwargs)
+
+        context['advert'] = Advertisement.objects.filter(
+            ad_type=Advertisement.TOP_AD,
+            status=Advertisement.ACTIVE
+        ).get_single_random()
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+
+        if not Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).exists():
+            return HttpResponse("No adverts") # TODO: Placeholder
+        return super(TopAdView, self).get(request, *args, **kwargs)
 
 
 def side_ads(request):
