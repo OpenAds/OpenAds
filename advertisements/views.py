@@ -10,7 +10,7 @@ from django.core.signing import TimestampSigner, BadSignature
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
 from django.core.exceptions import PermissionDenied
-from braces.views import LoginRequiredMixin, FormValidMessageMixin
+from braces.views import LoginRequiredMixin, FormMessagesMixin
 
 
 class ClickRegisterView(View):
@@ -119,15 +119,21 @@ class AdvertLoader(object):
         return context
 
 
-class AdvertStatisticsView(ProviderAccessPermissionMixin, AdvertLoader, FormValidMessageMixin, FormView):
+class AdvertStatisticsView(ProviderAccessPermissionMixin, AdvertLoader, FormMessagesMixin, FormView):
     template_name = "advertisements/statistics/advert_statistics.html"
     form_class = AdvertisementURLForm
     form_valid_message = "Your advert URL has been updated!"
+    form_invalid_message = "Your advert URL contained errors. Please check the syntax of the URL and try again!"
 
     def get_initial(self):
         return {
             "url": self.advert.url
         }
+
+    def get_context_data(self, **kwargs):
+        context = super(AdvertStatisticsView, self).get_context_data(**kwargs)
+        context["history"] = self.advert.click_history(history_days=10)
+        return context
 
     def get_success_url(self):
         return reverse("advert:provider:advert_statistics", args=[self.advert.pk])
