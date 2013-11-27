@@ -76,20 +76,13 @@ class ProviderAccessPermissionMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         self.is_superuser = request.user.is_superuser
 
-        # If the kwarg of provider_pk is in kwargs, an admin is trying to access the page
-        if "provider_pk" in kwargs:
-            if not self.is_superuser:
-                # The user is not valid and should not be allowed access
-                raise PermissionDenied
-            self.provider = get_object_or_404(Provider, pk=kwargs["provider_pk"])
+        # This is a provider accessing their own page
+        if hasattr(request.user, 'provider'):
+            # The user is a provider (and has one assigned to their account)
+            self.provider = request.user.provider
         else:
-            # This is a provider accessing their own page
-            if hasattr(request.user, 'provider'):
-                # The user is a provider (and has one assigned to their account)
-                self.provider = request.user.provider
-            else:
-                # The user is just a normal user, and should not get access
-                raise PermissionDenied
+            # The user is just a normal user, and should not get access
+            raise PermissionDenied
 
         return super(ProviderAccessPermissionMixin, self).dispatch(request, *args, **kwargs)
 
