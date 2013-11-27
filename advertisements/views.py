@@ -89,17 +89,6 @@ class ProviderAccessPermissionMixin(LoginRequiredMixin):
 
 @superuser_or_provider
 @login_required
-def providers_all(request):
-    if not request.user.is_superuser:
-        raise Http404
-    providers = Provider.objects.all()
-
-    return render(request, 'advertisements/statistics/provider_list.html', {
-        "providers": providers,
-    })
-
-@superuser_or_provider
-@login_required
 def view_provider_statistics(request, provider_pk):
     if not request.user.is_superuser:
         if request.user.provider.pk != long(provider_pk):
