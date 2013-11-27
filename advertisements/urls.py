@@ -1,10 +1,6 @@
 from django.conf.urls import patterns, include, url
 from .views import ClickRegisterView, TopAdView, SideAdView, ProviderStatisticsView
 
-adminpatterns = patterns('advertisements.views',
-    url(r'^$', 'providers_all', name="list"),
-    url(r'^(?P<provider_pk>\d+)/$', ProviderStatisticsView.as_view(), name="stats"),
-)
 
 providerpatterns = patterns('advertisements.views',
 
@@ -21,5 +17,4 @@ urlpatterns = patterns('advertisements.views',
 
     url(r'^$', 'go_to_providers', name="providers"),
     url(r'^provider/', include(providerpatterns, namespace='provider')),
-    url(r'^admin/', include(adminpatterns, namespace='admin')),
 )
