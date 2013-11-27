@@ -87,22 +87,6 @@ class ProviderAccessPermissionMixin(LoginRequiredMixin):
         return super(ProviderAccessPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
-@superuser_or_provider
-@login_required
-def view_provider_statistics(request, provider_pk):
-    if not request.user.is_superuser:
-        if request.user.provider.pk != long(provider_pk):
-            raise Http404
-    provider = get_object_or_404(Provider, pk=provider_pk)
-
-    return render(request, 'advertisements/statistics/provider_statistics.html', {
-        "provider": provider,
-        "active_ads": provider.advertisement_set.filter(status=Advertisement.ACTIVE),
-        "inactive_ads": provider.advertisement_set.filter(status=Advertisement.INACTIVE),
-        "pending_ads": provider.advertisement_set.filter(status=Advertisement.PENDING),
-    })
-
-
 class ProviderStatisticsView(ProviderAccessPermissionMixin, TemplateView):
     template_name = "advertisements/statistics/provider_statistics.html"
 
