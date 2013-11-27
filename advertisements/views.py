@@ -89,17 +89,6 @@ class ProviderAccessPermissionMixin(LoginRequiredMixin):
 
 @superuser_or_provider
 @login_required
-def go_to_providers(request):
-    if request.user.is_superuser:
-        return HttpResponseRedirect(reverse('advert:admin:list'))
-    else:
-        return HttpResponseRedirect(
-            reverse('advert:provider:stats', args=[request.user.provider.pk])
-        )
-
-
-@superuser_or_provider
-@login_required
 def providers_all(request):
     if not request.user.is_superuser:
         raise Http404

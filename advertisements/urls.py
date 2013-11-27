@@ -15,6 +15,5 @@ urlpatterns = patterns('advertisements.views',
     url(r'^top/$', TopAdView.as_view(), name='top'),
     url(r'^sides/$', SideAdView.as_view(), name='side'),
 
-    url(r'^$', 'go_to_providers', name="providers"),
     url(r'^provider/', include(providerpatterns, namespace='provider')),
 )
