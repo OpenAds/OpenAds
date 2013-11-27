@@ -146,33 +146,6 @@ class AdvertStatisticsView(ProviderAccessPermissionMixin, AdvertLoader, FormMess
 
 @superuser_or_provider
 @login_required
-def view_advert_statistics(request, advert_pk):
-    if not request.user.is_superuser:
-        if not request.user.provider.advertisement_set.filter(pk=advert_pk).exists():
-            raise Http404
-    advert = get_object_or_404(Advertisement, pk=advert_pk)
-
-    if request.method == "POST":
-        form = AdvertisementURLForm(request.POST)
-        if form.is_valid():
-            advert.url = form.cleaned_data["url"]
-            advert.save()
-            messages.success(request, "The URL for your advertisement has been updated!")
-        else:
-            messages.warning(request, "The URL for your advertisement was not valid!")
-
-    else:
-        form = AdvertisementURLForm({"url":advert.url})
-
-    return render(request, 'advertisements/statistics/advert_statistics.html', {
-        "advert": advert,
-        "history": advert.click_history(history_days=10),
-        "form": form
-    })
-
-
-@superuser_or_provider
-@login_required
 def provider_request(request, provider_pk):
     if not request.user.is_superuser:
         if request.user.provider.pk != long(provider_pk):
