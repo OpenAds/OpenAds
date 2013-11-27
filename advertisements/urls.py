@@ -1,13 +1,13 @@
 from django.conf.urls import patterns, include, url
-from .views import ClickRegisterView, TopAdView, SideAdView, ProviderStatisticsView
+from .views import ClickRegisterView, TopAdView, SideAdView, ProviderStatisticsView, AdvertStatisticsView
 
 
 providerpatterns = patterns('advertisements.views',
 
-    url(r'$', ProviderStatisticsView.as_view(), name="stats"),
+    url(r'^$', ProviderStatisticsView.as_view(), name="stats"),
 
     url(r'^request/$', 'provider_request', name="request"),
-    url(r'^ad/(?P<advert_pk>\d+)/$', 'view_advert_statistics', name="advert_statistics"),
+    url(r'^ad/(?P<advert_pk>\d+)/$', AdvertStatisticsView.as_view(), name="advert_statistics"),
 )
 
 urlpatterns = patterns('advertisements.views',

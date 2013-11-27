@@ -8,8 +8,9 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.core.signing import TimestampSigner, BadSignature
 from django.views.generic.base import View, TemplateView
+from django.views.generic.edit import FormView
 from django.core.exceptions import PermissionDenied
-from braces.views import LoginRequiredMixin
+from braces.views import LoginRequiredMixin, FormValidMessageMixin
 
 
 class ClickRegisterView(View):
@@ -99,6 +100,38 @@ class ProviderStatisticsView(ProviderAccessPermissionMixin, TemplateView):
         context["pending_ads"] = self.provider.advertisement_set.filter(status=Advertisement.PENDING)
 
         return context
+
+
+class AdvertStatisticsView(ProviderAccessPermissionMixin, FormValidMessageMixin, FormView):
+    template_name = "advertisements/statistics/advert_statistics.html"
+    form_class = AdvertisementURLForm
+    form_valid_message = "Your advert URL has been updated!"
+
+    advert = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.advert = get_object_or_404(Advertisement, pk=kwargs["advert_pk"])
+        return super(AdvertStatisticsView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(AdvertStatisticsView, self).get_context_data(**kwargs)
+        context["advert"] = self.advert
+
+        return context
+
+    def get_initial(self):
+        return {
+            "url": self.advert.url
+        }
+
+    def get_success_url(self):
+        return reverse("advert:provider:advert_statistics", args=[self.advert.pk])
+
+    def form_valid(self, form):
+        self.advert.url = form.cleaned_data["url"]
+        self.advert.save()
+        return super(AdvertStatisticsView, self).form_valid(form)
 
 
 @superuser_or_provider
