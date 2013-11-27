@@ -102,23 +102,27 @@ class ProviderStatisticsView(ProviderAccessPermissionMixin, TemplateView):
         return context
 
 
-class AdvertStatisticsView(ProviderAccessPermissionMixin, FormValidMessageMixin, FormView):
-    template_name = "advertisements/statistics/advert_statistics.html"
-    form_class = AdvertisementURLForm
-    form_valid_message = "Your advert URL has been updated!"
-
-    advert = None
+class AdvertLoader(object):
+    def __init__(self, *args, **kwargs):
+        super(AdvertLoader, self).__init__(*args, **kwargs)
+        self.advert = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.advert = get_object_or_404(Advertisement, pk=kwargs["advert_pk"])
-        return super(AdvertStatisticsView, self).dispatch(request, *args, **kwargs)
+        self.advert = get_object_or_404(self.provider.advertisement_set, pk=kwargs["advert_pk"])
+        return super(AdvertLoader, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
 
-        context = super(AdvertStatisticsView, self).get_context_data(**kwargs)
+        context = super(AdvertLoader, self).get_context_data(**kwargs)
         context["advert"] = self.advert
 
         return context
+
+
+class AdvertStatisticsView(ProviderAccessPermissionMixin, AdvertLoader, FormValidMessageMixin, FormView):
+    template_name = "advertisements/statistics/advert_statistics.html"
+    form_class = AdvertisementURLForm
+    form_valid_message = "Your advert URL has been updated!"
 
     def get_initial(self):
         return {
