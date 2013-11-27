@@ -110,9 +110,11 @@ class ProviderStatisticsView(ProviderAccessPermissionMixin, TemplateView):
         context = super(ProviderStatisticsView, self).get_context_data(**kwargs)
 
         context["provider"] = self.provider
-        context["active_ads"] = self.provider.advertisement_set.filter(status=Advertisement.ACTIVE),
-        context["inactive_ads"] = self.provider.advertisement_set.filter(status=Advertisement.INACTIVE),
-        context["pending_ads"] = self.provider.advertisement_set.filter(status=Advertisement.PENDING),
+        context["active_ads"] = self.provider.advertisement_set.filter(status=Advertisement.ACTIVE)
+        context["inactive_ads"] = self.provider.advertisement_set.filter(status=Advertisement.INACTIVE)
+        context["pending_ads"] = self.provider.advertisement_set.filter(status=Advertisement.PENDING)
+
+        return context
 
 
 @superuser_or_provider
