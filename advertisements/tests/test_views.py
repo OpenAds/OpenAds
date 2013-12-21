@@ -17,12 +17,40 @@ class ProviderViewTests(TestCase):
 
         self.client.login(username='provider', password='pass')
 
+    def test_home_redirects_to_own_statistics(self):
+        """
+        Test that a provider is redirected to their provider statistics page when visiting the home page
+        """
+        response = self.client.get(reverse('provider:home'), follow=True)
+
+        # Make sure it redirected
+        self.assertRedirects(response, reverse('provider:stats', args=[self.provider.pk]))
+
+        # Make sure it ended up at the right place
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('provider', response.context)
+        self.assertEqual(response.context['provider'], self.provider)
+
     def test_can_view_own_statistics(self):
         """
-        Test that a user can view their own provider page without problems
+        Test that a provider can view their own provider page without problems
         """
         response = self.client.get(
-            reverse('advertisements.views.view_provider_statistics', args=[self.user.provider.pk])
+            reverse('provider:stats', args=[self.provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('provider', response.context)
+        self.assertEqual(response.context['provider'], self.provider)
+
+    def test_visiting_other_provider_page_returns_own_provider(self):
+        """
+        Test that when a provider visits another provider's statistics page, they still get their own
+        """
+        other_provider = mommy.make(Provider)
+
+        response = self.client.get(
+            reverse('provider:stats', args=[other_provider.pk])
         )
 
         self.assertEqual(response.status_code, 200)
@@ -31,47 +59,30 @@ class ProviderViewTests(TestCase):
 
     def test_can_view_own_request_page(self):
         """
-        Test that a user can view their own request page without problems
+        Test that a provider can view their own request page without problems
         """
         response = self.client.get(
-            reverse('advertisements.views.provider_request', args=[self.user.provider.pk])
+            reverse('provider:request', args=[self.provider.pk])
         )
 
         self.assertEqual(response.status_code, 200)
 
-    def test_can_not_view_other_request_page(self):
+    def test_can_not_view_provider_list_page(self):
         """
-        Test that a user can not view other request pages
+        Test that a provider can not view the admin overview page of all the providers. They should be redirected
+        to a login page
         """
-        response = self.client.get(
-            reverse('advertisements.views.provider_request', args=[self.provider2.pk])
-        )
+        response = self.client.get(reverse('provider:list'), follow=True)
 
-        self.assertEqual(response.status_code, 404)
-
-    def test_can_not_view_other_statistics(self):
-        """
-        Test that a user can not view other peoples pages
-        """
-        response = self.client.get(reverse('advertisements.views.view_provider_statistics', args=[self.provider2.pk]))
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_can_not_view_providers_page(self):
-        """
-        Test that a user can not view the admin overview page of all the providers
-        """
-        response = self.client.get(reverse('advertisements.views.providers_all'))
-
-        self.assertEqual(response.status_code, 404)
+        self.assertRedirects(response, reverse('accounts:login') + "?next=/list/")
 
     def test_can_view_own_ad_statistics(self):
         """
-        Test that the user can view their own ad statistics
+        Test that a provider can view their own ad statistics
         """
 
         for advert in self.provider_adverts:
-            response = self.client.get(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
+            response = self.client.get(reverse('provider:advert_statistics', args=[advert.pk]))
 
             self.assertEqual(response.status_code, 200)
             self.assertIn('advert', response.context)
@@ -79,11 +90,13 @@ class ProviderViewTests(TestCase):
 
     def test_can_not_view_other_ad_statistics(self):
         """
-        Test that the user can not view other ad statistics
+        Test that a provider can not view other ad statistics
         """
 
-        for advert in self.provider2_adverts:
-            response = self.client.get(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
+        other_provider_adverts = mommy.make(Advertisement, _quantity=5)
+
+        for advert in other_provider_adverts:
+            response = self.client.get(reverse('provider:advert_statistics', args=[advert.pk]))
 
             self.assertEqual(response.status_code, 404)
 
