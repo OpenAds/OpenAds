@@ -1,16 +1,13 @@
 from django.http import HttpResponseRedirect, HttpResponse, Http404
-from django.shortcuts import get_object_or_404, render
-from advertisements.models import Advertisement, Provider
-from advertisements.decorators import superuser_or_provider
-from advertisements.forms import AdvertisementURLForm, AdvertisementRequestForm
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from django.contrib import messages
 from django.core.signing import TimestampSigner, BadSignature
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
-from django.core.exceptions import PermissionDenied
 from braces.views import LoginRequiredMixin, SuperuserRequiredMixin, FormMessagesMixin
+from advertisements.models import Advertisement, Provider
+from advertisements.forms import AdvertisementURLForm, AdvertisementRequestForm
+from advertisements.views.mixins import ProviderPermissionRequired, AdvertLoader
 
 
 class ClickRegisterView(View):
@@ -67,35 +64,7 @@ class SideAdView(TemplateView):
         return super(SideAdView, self).get(request, *args, **kwargs)
 
 
-class ProviderAccessPermissionMixin(object):
-    def __init__(self, *args, **kwargs):
-        super(ProviderAccessPermissionMixin, self).__init__(*args, **kwargs)
-
-        self.is_superuser = False
-        self.provider = None
-
-    def dispatch(self, request, *args, **kwargs):
-        self.is_superuser = request.user.is_superuser
-
-        if self.is_superuser:
-            # The user is a superuser, and the provider_pk should be in the url
-            if "provider_pk" in kwargs:
-                self.provider = get_object_or_404(Provider, pk=kwargs["provider_pk"])
-        elif hasattr(request.user, 'provider'):
-            # The user is a provider (and has one assigned to their account)
-            self.provider = request.user.provider
-        else:
-            # The user is just a normal user, and should not get access
-            raise PermissionDenied
-
-        return super(ProviderAccessPermissionMixin, self).dispatch(request, *args, **kwargs)
-
-
-class ProviderPermissionRequired(LoginRequiredMixin, ProviderAccessPermissionMixin):
-    pass
-
-
-class ProviderPermissionRedirectView(ProviderAccessPermissionMixin, View):
+class ProviderPermissionRedirectView(ProviderPermissionRequired, View):
     def get(self, request, *args, **kwargs):
         if self.is_superuser:
             # User is an admin, and should see the list view
@@ -138,27 +107,7 @@ class ProviderStatisticsView(ProviderPermissionRequired, TemplateView):
         return context
 
 
-class AdvertLoader(object):
-    def __init__(self, *args, **kwargs):
-        super(AdvertLoader, self).__init__(*args, **kwargs)
-        self.advert = None
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.is_superuser:
-            self.advert = get_object_or_404(Advertisement, pk=kwargs["advert_pk"])
-        else:
-            self.advert = get_object_or_404(self.provider.advertisement_set, pk=kwargs["advert_pk"])
-        return super(AdvertLoader, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-
-        context = super(AdvertLoader, self).get_context_data(**kwargs)
-        context["advert"] = self.advert
-
-        return context
-
-
-class AdvertStatisticsView(ProviderAccessPermissionMixin, AdvertLoader, FormMessagesMixin, FormView):
+class AdvertStatisticsView(ProviderPermissionRequired, AdvertLoader, FormMessagesMixin, FormView):
     template_name = "advertisements/statistics/advert_statistics.html"
     form_class = AdvertisementURLForm
     form_valid_message = "Your advert URL has been updated!"
