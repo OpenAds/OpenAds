@@ -32,10 +32,6 @@ class ProviderCountMethodTests(TestCase):
             status=Advertisement.PENDING
         )
 
-    def tearDown(self):
-        self.provider.delete()
-        self.user.delete()
-
     def test_active_ads_returns_correct_amounts(self):
         """
         Test that the active_ads method on a provider returns the correct amount
