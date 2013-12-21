@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block page-title %}
+  List of providers
+{% endblock %}
+
+{% block content %}
+  <div class="list-group">
+    {% for provider in providers %}
+      <a href="{% url 'provider:stats' provider.pk %}" class="list-group-item">{{ provider.name }}</a>
+    {% empty %}
+      <a href="#" class="list-group-item">No providers</a>
+    {% endfor %}
+  </div>
+{% endblock %}

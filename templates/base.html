@@ -17,12 +17,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'advert:provider:stats' %}">Open Ads</a>
+          <a class="navbar-brand" href="{% url 'provider:home' %}">Open Ads</a>
         </div>
 
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{% url 'advert:provider:stats' %}">Home</a></li>
+            <li class="{% if is_home %}active{% endif %}"><a href="{% url 'provider:home' %}">Home</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}

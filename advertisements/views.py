@@ -10,7 +10,7 @@ from django.core.signing import TimestampSigner, BadSignature
 from django.views.generic.base import View, TemplateView
 from django.views.generic.edit import FormView
 from django.core.exceptions import PermissionDenied
-from braces.views import LoginRequiredMixin, FormMessagesMixin
+from braces.views import LoginRequiredMixin, SuperuserRequiredMixin, FormMessagesMixin
 
 
 class ClickRegisterView(View):
@@ -67,7 +67,7 @@ class SideAdView(TemplateView):
         return super(SideAdView, self).get(request, *args, **kwargs)
 
 
-class ProviderAccessPermissionMixin(LoginRequiredMixin):
+class ProviderAccessPermissionMixin(object):
     def __init__(self, *args, **kwargs):
         super(ProviderAccessPermissionMixin, self).__init__(*args, **kwargs)
 
@@ -77,8 +77,11 @@ class ProviderAccessPermissionMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         self.is_superuser = request.user.is_superuser
 
-        # This is a provider accessing their own page
-        if hasattr(request.user, 'provider'):
+        if self.is_superuser:
+            # The user is a superuser, and the provider_pk should be in the url
+            if "provider_pk" in kwargs:
+                self.provider = get_object_or_404(Provider, pk=kwargs["provider_pk"])
+        elif hasattr(request.user, 'provider'):
             # The user is a provider (and has one assigned to their account)
             self.provider = request.user.provider
         else:
@@ -88,7 +91,36 @@ class ProviderAccessPermissionMixin(LoginRequiredMixin):
         return super(ProviderAccessPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
-class ProviderStatisticsView(ProviderAccessPermissionMixin, TemplateView):
+class ProviderPermissionRequired(LoginRequiredMixin, ProviderAccessPermissionMixin):
+    pass
+
+
+class ProviderPermissionRedirectView(ProviderAccessPermissionMixin, View):
+    def get(self, request, *args, **kwargs):
+        if self.is_superuser:
+            # User is an admin, and should see the list view
+            return HttpResponseRedirect(reverse('provider:list'))
+        else:
+            # User is a provider, and should be directed to their provider page
+            return HttpResponseRedirect(reverse('provider:stats', args=[self.provider.pk]))
+
+
+class ProviderListView(LoginRequiredMixin, SuperuserRequiredMixin, TemplateView):
+    template_name = 'advertisements/statistics/provider_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProviderListView, self).get_context_data(**kwargs)
+
+        # User is a superuser, so this is their home
+        context["is_home"] = True
+
+        # A list of all providers, sorted alphabetically
+        context["providers"] = Provider.objects.order_by('name')
+
+        return context
+
+
+class ProviderStatisticsView(ProviderPermissionRequired, TemplateView):
     template_name = "advertisements/statistics/provider_statistics.html"
 
     def get_context_data(self, **kwargs):
@@ -99,6 +131,10 @@ class ProviderStatisticsView(ProviderAccessPermissionMixin, TemplateView):
         context["inactive_ads"] = self.provider.advertisement_set.filter(status=Advertisement.INACTIVE)
         context["pending_ads"] = self.provider.advertisement_set.filter(status=Advertisement.PENDING)
 
+        if not self.is_superuser:
+            # User is just a provider
+            context["is_home"] = True
+
         return context
 
 
@@ -108,7 +144,10 @@ class AdvertLoader(object):
         self.advert = None
 
     def dispatch(self, request, *args, **kwargs):
-        self.advert = get_object_or_404(self.provider.advertisement_set, pk=kwargs["advert_pk"])
+        if self.is_superuser:
+            self.advert = get_object_or_404(Advertisement, pk=kwargs["advert_pk"])
+        else:
+            self.advert = get_object_or_404(self.provider.advertisement_set, pk=kwargs["advert_pk"])
         return super(AdvertLoader, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -136,7 +175,7 @@ class AdvertStatisticsView(ProviderAccessPermissionMixin, AdvertLoader, FormMess
         return context
 
     def get_success_url(self):
-        return reverse("advert:provider:advert_statistics", args=[self.advert.pk])
+        return reverse("provider:advert_statistics", args=[self.advert.pk])
 
     def form_valid(self, form):
         self.advert.url = form.cleaned_data["url"]
@@ -144,30 +183,26 @@ class AdvertStatisticsView(ProviderAccessPermissionMixin, AdvertLoader, FormMess
         return super(AdvertStatisticsView, self).form_valid(form)
 
 
-@superuser_or_provider
-@login_required
-def provider_request(request, provider_pk):
-    if not request.user.is_superuser:
-        if request.user.provider.pk != long(provider_pk):
-            raise Http404
+class ProviderRequestView(ProviderPermissionRequired, FormMessagesMixin, FormView):
+    template_name = "advertisements/statistics/request_form.html"
 
-    provider = get_object_or_404(Provider, pk=provider_pk)
+    form_class = AdvertisementRequestForm
+    form_valid_message = "The advertisement request has been sent!"
+    form_invalid_message = "There were errors in your request. Please correct them and resubmit the request."
 
-    if request.method == "POST":
-        advert = Advertisement(
-            provider=provider,
+    advert = None
+
+    def get_form_kwargs(self):
+        current_kwargs = super(ProviderRequestView, self).get_form_kwargs()
+        current_kwargs["instance"] = Advertisement(
+            provider=self.provider,
             status=Advertisement.PENDING,
         )
-        form = AdvertisementRequestForm(request.POST, request.FILES, instance=advert)
-        if form.is_valid():
-            advert = form.save()
-            messages.success(request, "Request has been sent!")
-            return HttpResponseRedirect(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
-        else:
-            messages.warning(request, "The request was not valid!")
-    else:
-        form = AdvertisementRequestForm()
+        return current_kwargs
 
-    return render(request, 'advertisements/statistics/request_form.html', {
-        "form": form
-    })
+    def form_valid(self, form):
+        self.advert = form.save()
+        return super(ProviderRequestView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse("provider:advert_statistics", args=[self.advert.pk])
