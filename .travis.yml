@@ -1,25 +1,12 @@
 language: python
 python:
-  - "2.6"
   - "2.7"
 env:
-  - DJANGO=Django==1.5 DB=sqlite
-  - DJANGO=Django==1.5.1 DB=sqlite
-  - DJANGO=Django==1.5.2 DB=sqlite
-  - DJANGO=Django==1.5.3 DB=sqlite
-  - DJANGO=Django==1.5.4 DB=sqlite
-  - DJANGO=Django==1.5.4 DB=mysql
-  - DJANGO=Django==1.5.4 DB=postgresql
-  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=sqlite
-  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=mysql
-  - DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/ DB=postgresql
-
-matrix:
-  allow_failures:
-    - env: DJANGO=https://www.djangoproject.com/download/1.6b4/tarball/
+  - DJANGO=Django==1.6 DB=sqlite
+  - DJANGO=Django==1.6 DB=mysql
+  - DJANGO=Django==1.6 DB=postgresql
 install:
-  - pip install -q -r requirements.txt --use-mirrors
-  - pip install -q -r test_requirements.txt --use-mirrors
+  - pip install -q -r requirements/all.txt --use-mirrors
   - pip install -q $DJANGO --use-mirrors
 before_script:
   - python -c "import django; print(django.get_version())"

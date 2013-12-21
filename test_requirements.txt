@@ -1,4 +1,0 @@
--r requirements.txt
-coverage==3.6
-selenium
-psycopg2

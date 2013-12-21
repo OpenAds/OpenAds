@@ -1,0 +1,4 @@
+-r base.txt
+coverage
+psycopg2
+model-mommy

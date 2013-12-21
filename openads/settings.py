@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # Only mysql support
-        'NAME': 'adverts',
+        'NAME': 'adverts2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
@@ -129,10 +129,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'openads.urls'
+ROOT_URLCONF = 'OpenAds.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'openads.wsgi.application'
+WSGI_APPLICATION = 'OpenAds.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

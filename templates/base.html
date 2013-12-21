@@ -17,18 +17,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{% url 'advertisements.views.go_to_providers' %}">Open Ads</a>
+          <a class="navbar-brand" href="{% url 'provider:home' %}">Open Ads</a>
         </div>
 
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="{% url 'advertisements.views.go_to_providers' %}">Home</a></li>
-            {% if request.user.is_superuser %}
-            <li class="{% active_nav request 'advertisements.views.providers_all' %}">
-              <a href="{% url 'advertisements.views.providers_all' %}">Providers</a>
-            </li>
-            <li><a href="{% url 'admin:index' %}">Administration</a></li>
-            {% endif %}
+            <li class="{% if is_home %}active{% endif %}"><a href="{% url 'provider:home' %}">Home</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}

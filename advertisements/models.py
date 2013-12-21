@@ -6,6 +6,7 @@ from datetime import timedelta
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.signing import TimestampSigner
+from .managers import AdvertisementManager
 
 
 class Provider(models.Model):
@@ -77,6 +78,8 @@ class Advertisement(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    objects = AdvertisementManager()
+
     def __unicode__(self):
         return "{0} ({1})".format(self.provider.name, self.get_ad_type_display())
 
@@ -116,7 +119,7 @@ class Advertisement(models.Model):
         signer = TimestampSigner()
         advert_signed = signer.sign(self.pk)
 
-        return reverse('advertisements.views.advanced_click_register', args=[advert_signed])
+        return reverse('advert:go', args=[advert_signed])
 
     def total_clicks(self):
         return self.click_set.count()
