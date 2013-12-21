@@ -101,106 +101,120 @@ class ProviderViewTests(TestCase):
             self.assertEqual(response.status_code, 404)
 
 
-#class SuperuserViewTests(TestCase):
-#    def setUp(self):
-#        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
-#        self.user.is_superuser = True
-#        self.user.is_staff = True
-#        self.user.save()
-#
-#        self.provider = Provider(
-#            name='provider',
-#            user=self.user,
-#        )
-#        self.provider.save()
-#
-#        self.provider2 = Provider(
-#            name='provider2'
-#        )
-#        self.provider2.save()
-#
-#        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
-#        self.provider2_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider2)
-#
-#        self.client.login(username='admin', password='pass')
-#
-#    def tearDown(self):
-#        self.client.logout()
-#        self.provider.delete()
-#        self.provider2.delete()
-#        self.user.delete()
-#
-#    def test_can_view_own_statistics(self):
-#        """
-#        Test that an admin can view their own provider page without problems
-#        """
-#        response = self.client.get(
-#            reverse('advertisements.views.view_provider_statistics', args=[self.user.provider.pk])
-#        )
-#
-#        self.assertEqual(response.status_code, 200)
-#        self.assertIn('provider', response.context)
-#        self.assertEqual(response.context['provider'], self.provider)
-#
-#    def test_can_view_other_statistics(self):
-#        """
-#        Test that an admin can view other peoples pages
-#        """
-#        response = self.client.get(reverse('advertisements.views.view_provider_statistics', args=[self.provider2.pk]))
-#
-#        self.assertEqual(response.status_code, 200)
-#        self.assertIn('provider', response.context)
-#        self.assertEqual(response.context['provider'], self.provider2)
-#
-#    def test_can_view_providers_page(self):
-#        """
-#        Test that an admin can view the admin overview page of all the providers
-#        """
-#        response = self.client.get(reverse('advertisements.views.providers_all'))
-#
-#        self.assertEqual(response.status_code, 200)
-#
-#    def test_can_view_own_request_page(self):
-#        """
-#        Test that an admin can view their own request page
-#        """
-#        response = self.client.get(reverse('advertisements.views.provider_request', args=[self.provider.pk]))
-#
-#        self.assertEqual(response.status_code, 200)
-#
-#    def test_can_view_other_request_pages(self):
-#        """
-#        Test that an admin can view other request pages
-#        """
-#        response = self.client.get(reverse('advertisements.views.provider_request', args=[self.provider2.pk]))
-#
-#        self.assertEqual(response.status_code, 200)
-#
-#    def test_can_view_own_ad_statistics(self):
-#        """
-#        Test that an admin can view their own ad statistics
-#        """
-#
-#        for advert in self.provider_adverts:
-#            response = self.client.get(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
-#
-#            self.assertEqual(response.status_code, 200)
-#            self.assertIn('advert', response.context)
-#            self.assertEqual(response.context['advert'], advert)
-#
-#    def test_can_view_other_ad_statistics(self):
-#        """
-#        Test that an admin can view other ad statistics
-#        """
-#
-#        for advert in self.provider2_adverts:
-#            response = self.client.get(reverse('advertisements.views.view_advert_statistics', args=[advert.pk]))
-#
-#            self.assertEqual(response.status_code, 200)
-#            self.assertIn('advert', response.context)
-#            self.assertEqual(response.context['advert'], advert)
-#
-#
+class SuperuserViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
+        self.user.is_superuser = True
+        self.user.is_staff = True
+        self.user.save()
+
+        self.provider = mommy.make(Provider)
+        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
+
+        self.client.login(username='admin', password='pass')
+
+    def test_can_view_provider_statistics(self):
+        """
+        Test that an admin can view any providers statistics page without issues
+        """
+
+        # Provider 1
+        response = self.client.get(
+            reverse('provider:stats', args=[self.provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('provider', response.context)
+        self.assertEqual(response.context['provider'], self.provider)
+
+        # Second provider
+        second_provider = mommy.make(Provider)
+
+        response = self.client.get(
+            reverse('provider:stats', args=[second_provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('provider', response.context)
+        self.assertEqual(response.context['provider'], second_provider)
+
+        # A provider attached to the admin
+        attached_provider = mommy.make(Provider, user=self.user)
+
+        response = self.client.get(
+            reverse('provider:stats', args=[attached_provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('provider', response.context)
+        self.assertEqual(response.context['provider'], attached_provider)
+
+    def test_can_view_provider_list_page(self):
+        """
+        Test that an admin can view the admin overview page of all the providers
+        """
+        response = self.client.get(reverse('provider:list'))
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertIn('providers', response.context)
+        self.assertEqual(len(response.context["providers"]), 1)
+        self.assertEqual(response.context["providers"][0], self.provider)
+
+    def test_can_view_any_request_page(self):
+        """
+        Test that an admin can view their own request page
+        """
+
+        # Provider 1
+        response = self.client.get(
+            reverse('provider:request', args=[self.provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        # Second provider
+        second_provider = mommy.make(Provider)
+
+        response = self.client.get(
+            reverse('provider:request', args=[second_provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        # A provider attached to the admin
+        attached_provider = mommy.make(Provider, user=self.user)
+
+        response = self.client.get(
+            reverse('provider:request', args=[attached_provider.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_can_view_any_ad_statistics(self):
+        """
+        Test that an admin can view their own ad statistics
+        """
+
+        for advert in self.provider_adverts:
+            response = self.client.get(reverse('provider:advert_statistics', args=[advert.pk]))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('advert', response.context)
+            self.assertEqual(response.context['advert'], advert)
+
+        # Provider attached to user
+        attached_provider = mommy.make(Provider, user=self.user)
+        attached_adverts = mommy.make(Advertisement, provider=attached_provider, _quantity=10)
+
+        for advert in attached_adverts:
+            response = self.client.get(reverse('provider:advert_statistics', args=[advert.pk]))
+
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('advert', response.context)
+            self.assertEqual(response.context['advert'], advert)
+
+
 #class UserViewTests(TestCase):
 #    def setUp(self):
 #        self.user = User.objects.create_user('user', 'test@example.com', 'pass')
