@@ -264,63 +264,34 @@ class UserViewTests(TestCase):
             self.assertEqual(response.status_code, 403)
 
 
-#class AdvertisementViewTests(TestCase):
-#    def setUp(self):
-#        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
-#        self.user.is_superuser = True
-#        self.user.is_staff = True
-#        self.user.save()
-#
-#        self.provider = Provider(
-#            name='provider',
-#            user=self.user,
-#        )
-#        self.provider.save()
-#
-#        self.provider_adverts = mommy.make(Advertisement, _quantity=10, provider=self.provider)
-#
-#        self.client.login(username='admin', password='pass')
-#
-#    def tearDown(self):
-#        self.client.logout()
-#        self.provider.delete()
-#        self.user.delete()
-#
-#    def test_can_view_top_ads_with_login(self):
-#        """
-#        Test that a logged in user can view the top ads
-#        """
-#        response = self.client.get(reverse('advertisements.views.top_ad'))
-#
-#        self.assertEqual(response.status_code, 200)
-#
-#    def test_can_view_side_ads_with_login(self):
-#        """
-#        Test that a logged in user can view the side ads
-#        """
-#        response = self.client.get(reverse('advertisements.views.side_ads'))
-#
-#        self.assertEqual(response.status_code, 200)
-#
-#    def test_can_view_top_ads_without_login(self):
-#        """
-#        Test that a logged out user can view the top ads
-#        """
-#        self.client.logout()
-#        response = self.client.get(reverse('advertisements.views.top_ad'))
-#
-#        self.assertEqual(response.status_code, 200)
-#
-#    def test_can_view_side_ads_without_login(self):
-#        """
-#        Test that a logged out user can view the side ads
-#        """
-#        self.client.logout()
-#        response = self.client.get(reverse('advertisements.views.side_ads'))
-#
-#        self.assertEqual(response.status_code, 200)
-#
-#
+class AdvertisementViewTests(TestCase):
+    def setUp(self):
+        self.top_advert = mommy.make(Advertisement, ad_type=Advertisement.TOP_AD)
+        self.side_adverts = mommy.make(Advertisement, ad_type=Advertisement.SIDE_AD, _quantity=4)
+
+    def test_can_view_top(self):
+        """
+        Test that a user can view the top ad and that the top ad exists
+        """
+        response = self.client.get(reverse('advert:top'))
+
+        self.assertEqual(response.status_code, 200)
+
+        # Make sure that the ad properties are there
+        self.assertContains(response, self.top_advert.image)
+
+    def test_can_view_side_ads_without_login(self):
+        """
+        Test that a logged out user can view the side ads and that the side ads exist
+        """
+        response = self.client.get(reverse('advert:side'))
+
+        self.assertEqual(response.status_code, 200)
+
+        for advert in self.side_adverts:
+            self.assertContains(response, advert.image)
+
+
 #class ClickRegisterTest(TestCase):
 #    def setUp(self):
 #        self.user = User.objects.create_user('admin', 'test@example.com', 'pass')
