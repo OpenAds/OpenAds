@@ -291,6 +291,48 @@ class AdvertisementViewTests(TestCase):
         for advert in self.side_adverts:
             self.assertContains(response, advert.image)
 
+    def test_only_active_ads_are_shown_on_top(self):
+        """
+        Test that only active adverts are shown on the top
+        """
+
+        # Inactive advert
+        self.top_advert.status = Advertisement.INACTIVE
+        self.top_advert.save()
+
+        response = self.client.get(reverse('advert:top'))
+
+        self.assertNotContains(response, self.top_advert.image)
+
+        # Pending advert
+        self.top_advert.status = Advertisement.PENDING
+        self.top_advert.save()
+
+        response = self.client.get(reverse('advert:top'))
+
+        self.assertNotContains(response, self.top_advert.image)
+
+    def test_only_active_ads_are_shown_on_side(self):
+        """
+        Test that only active adverts are shown on the side
+        """
+
+        # Inactive advert
+        Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD).update(status=Advertisement.INACTIVE)
+
+        response = self.client.get(reverse('advert:side'))
+
+        for advert in self.side_adverts:
+            self.assertNotContains(response, advert.image)
+
+        # Pending advert
+        Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD).update(status=Advertisement.PENDING)
+
+        response = self.client.get(reverse('advert:side'))
+
+        for advert in self.side_adverts:
+            self.assertNotContains(response, advert.image)
+
 
 #class ClickRegisterTest(TestCase):
 #    def setUp(self):
