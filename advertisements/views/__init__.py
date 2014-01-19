@@ -7,7 +7,7 @@ from django.views.generic.edit import FormView
 from braces.views import LoginRequiredMixin, SuperuserRequiredMixin, FormMessagesMixin
 from advertisements.models import Advertisement, Provider
 from advertisements.forms import AdvertisementURLForm, AdvertisementRequestForm
-from advertisements.views.mixins import ProviderPermissionRequired, AdvertLoader
+from advertisements.views.mixins import ProviderPermissionRequired, AdvertLoader, PanelLoadMixin
 
 
 class ClickRegisterView(View):
@@ -62,6 +62,11 @@ class SideAdView(TemplateView):
         if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
             return HttpResponse("No adverts")  # TODO: Placeholder
         return super(SideAdView, self).get(request, *args, **kwargs)
+
+
+class PanelAdView(PanelLoadMixin, TemplateView):
+    def get_template_names(self):
+        return []
 
 
 class ProviderPermissionRedirectView(ProviderPermissionRequired, View):

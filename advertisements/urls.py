@@ -3,6 +3,7 @@ from .views import (
     ClickRegisterView,
     TopAdView,
     SideAdView,
+    PanelAdView,
     ProviderPermissionRedirectView,
     ProviderListView,
     ProviderStatisticsView,
@@ -24,6 +25,7 @@ providerpatterns = patterns('advertisements.views',
 
 urlpatterns = patterns('advertisements.views',
     url(r'^c/(?P<ad_identifier>\d+:.+)/$', ClickRegisterView.as_view(), name='go'),
+    url(r'^(?P<panel_pk>\d+)/$', PanelAdView.as_view()),
     url(r'^top/$', TopAdView.as_view(), name='top'),
     url(r'^sides/$', SideAdView.as_view(), name='side'),
 )
