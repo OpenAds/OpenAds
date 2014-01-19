@@ -88,6 +88,13 @@ class AdvertisementPanel(models.Model):
     def get_absolute_url(self):
         return reverse('advert:panel', args=[self.pk])
 
+    def get_iframe_url(self):
+        return '<iframe width="{0}" height="{1}" frameborder="0" scrolling="no" src="[INSERT_BASE_URL_HERE]{2}"></iframe>'.format(
+            self.total_width,
+            self.total_height,
+            self.get_absolute_url(),
+        )
+
     def __unicode__(self):
         return "{} ({}x{})".format(self.name, self.width, self.height)
 

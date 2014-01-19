@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.template import Context, Template
 from advertisements.models import Advertisement, Provider, Click, AdvertisementPanel
 from django.db.models import Count
@@ -47,10 +49,12 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
 
 class PanelAdmin(admin.ModelAdmin):
-    readonly_fields = ('look_and_feel',)
+    readonly_fields = ('look_and_feel', 'embed_url',)
     list_display = ('name', 'width', 'height', 'cols', 'rows',)
 
     def look_and_feel(self, instance):
+        if instance.pk is None:
+            return "Preview available after save"
         return Template("""
         {% spaceless %}
         <iframe src="{% url 'advert:preview_size' panel.width panel.height panel.cols panel.rows %}" height={{ panel.total_height }} width={{ panel.total_width }} style="border: none;">
@@ -61,7 +65,19 @@ class PanelAdmin(admin.ModelAdmin):
         }))
 
     look_and_feel.allow_tags = True
-    look_and_feel.short_description = 'Look'
+    look_and_feel.short_description = 'Preview'
+
+    def embed_url(self, instance):
+        if instance.pk is None:
+            return "Embed URL available after save"
+
+        return format_html(
+            "{0} {1}",
+            instance.get_iframe_url(),
+            mark_safe("<br> <strong>Replace [INSERT_BASE_URL_HERE] with the site url</strong>")
+        )
+    embed_url.allow_tags = True
+    embed_url.short_description = "Embed URL"
 
 
 admin.site.register(Provider)
