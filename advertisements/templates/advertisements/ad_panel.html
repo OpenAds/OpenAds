@@ -1,10 +1,25 @@
-{% extends 'advertisements/ad_base.html' %}
-{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <style type="text/css">
+    .container a:nth-child({{ panel.cols }}n) {
+      margin-right: 0;
+    }
+    .container {
+      width: {{ panel.total_width }}px;
+    }
+  </style>
+</head>
+<body style="background-color: {{ body_back }}">
   <div class="container">
     {% for advert in adverts %}
       <a target="_blank" href="{{ advert.get_signed_link }}">
-        <img border="0" width="125" height="125" src="{{ advert.image.url }}" class="side-image">
+        <img border="0" width="{{ panel.width }}" height="{{ panel.height }}" src="{{ advert.image.url }}" class="main-item">
       </a>
     {% endfor %}
   </div>
-{% endblock %}
+</body>
+</html>

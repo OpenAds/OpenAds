@@ -3,31 +3,18 @@ body {
     padding: 0;
 }
 
-.banner-image {
-    width: 728px;
-    height: 90px;
-    margin: 0;
-    padding: 0;
-}
-
 .container {
-    width: 254px;
     a {
         text-decoration: none;
         margin: 0;
         padding: 0;
         float: left;
-        margin-right: 4px;
+        margin-right: 5px;
 
-        .side-image {
-            width: 125px;
-            height: 125px;
+        .main-item {
             margin: 0;
             padding: 0;
         }
 
-    }
-    a:nth-child(2n){
-        margin-right: 0;
     }
 }
