@@ -1,4 +1,4 @@
-dev.db
+database.sqlite3
 media/resources/*
 
 docs/_build/*
