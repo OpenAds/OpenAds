@@ -83,7 +83,7 @@ class Advertisement(models.Model):
     objects = AdvertisementManager()
 
     def __unicode__(self):
-        return "{0} ({1})".format(self.provider.name, self.get_ad_type_display())
+        return "{0} - {1}".format(self.provider.name, self.panel)
 
     def clicked(self):
         click = Click(
