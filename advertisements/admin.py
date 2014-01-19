@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.template import Context, Template
 from advertisements.models import Advertisement, Provider, Click, AdvertisementPanel
 from django.db.models import Count
 
@@ -44,6 +45,24 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
     actions = [make_enabled, make_disabled]
 
+
+class PanelAdmin(admin.ModelAdmin):
+    readonly_fields = ('look_and_feel',)
+    list_display = ('name', 'width', 'height', 'cols', 'rows',)
+
+    def look_and_feel(self, instance):
+        return Template("""
+        {% spaceless %}
+        <iframe src="{% url 'advert:preview_size' panel.width panel.height panel.cols panel.rows %}"></iframe>
+        {% endspaceless %}
+        """).render(Context({
+            "panel": instance,
+        }))
+
+    look_and_feel.allow_tags = True
+    look_and_feel.short_description = 'Look'
+
+
 admin.site.register(Provider)
 admin.site.register(Advertisement, AdvertisementAdmin)
-admin.site.register(AdvertisementPanel)
+admin.site.register(AdvertisementPanel, PanelAdmin)

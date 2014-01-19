@@ -69,6 +69,21 @@ class PanelAdView(PanelLoadMixin, TemplateView):
         return []
 
 
+class PreviewView(SuperuserRequiredMixin, TemplateView):
+    template_name = 'advertisements/preview.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(PreviewView, self).get_context_data(**kwargs)
+
+        context["width"] = kwargs["width"]
+        context["height"] = kwargs["height"]
+        context["cols"] = range(int(kwargs["cols"]))
+        context["rows"] = range(int(kwargs["rows"]))
+
+        return context
+
+
 class ProviderPermissionRedirectView(ProviderPermissionRequired, View):
     def get(self, request, *args, **kwargs):
         if self.is_superuser:
