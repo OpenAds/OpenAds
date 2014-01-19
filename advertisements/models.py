@@ -85,6 +85,9 @@ class AdvertisementPanel(models.Model):
 
         return adverts
 
+    def get_absolute_url(self):
+        return reverse('advert:panel', args=[self.pk])
+
     def __unicode__(self):
         return "{} ({}x{})".format(self.name, self.width, self.height)
 

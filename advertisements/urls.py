@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, include, url
 from .views import (
     ClickRegisterView,
-    TopAdView,
-    SideAdView,
     PanelAdView,
     PreviewView,
     ProviderPermissionRedirectView,
