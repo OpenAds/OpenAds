@@ -41,14 +41,13 @@ def get_file_path(instance, filename):
     return os.path.join('resources', filename)
 
 
-class Advertisement(models.Model):
-    TOP_AD = 't'
-    SIDE_AD = 's'
+class AdvertisementPanel(models.Model):
+    name = models.CharField(max_length=255)
+    height = models.PositiveIntegerField()
+    width = models.PositiveIntegerField()
 
-    AD_TYPES = (
-        (TOP_AD, 'Banner Ad'),
-        (SIDE_AD, 'Side Ad'),
-    )
+
+class Advertisement(models.Model):
 
     ACTIVE = 'a'
     INACTIVE = 'i'
@@ -60,7 +59,7 @@ class Advertisement(models.Model):
         (PENDING, 'Pending'),
     )
 
-    ad_type = models.CharField(max_length=1, choices=AD_TYPES)
+    panel = models.ForeignKey(AdvertisementPanel)
     provider = models.ForeignKey(Provider)
     url = models.URLField(max_length=255)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=ACTIVE)

@@ -1,12 +1,12 @@
 from django.contrib import admin
-from advertisements.models import Advertisement, Provider, Click
+from advertisements.models import Advertisement, Provider, Click, AdvertisementPanel
 from django.db.models import Count
 
 
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ('provider', 'ad_type', 'image_thumbnail', 'created', 'status', 'total_clicks')
+    list_display = ('provider', 'panel', 'image_thumbnail', 'created', 'status', 'total_clicks')
     date_hierarchy = 'created'
-    list_filter = ('ad_type', 'status', 'created')
+    list_filter = ('panel', 'status', 'created')
 
     def total_clicks(self, obj):
         return obj.click_set.count()
@@ -50,3 +50,4 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
 admin.site.register(Provider)
 admin.site.register(Advertisement, AdvertisementAdmin)
+admin.site.register(AdvertisementPanel)
