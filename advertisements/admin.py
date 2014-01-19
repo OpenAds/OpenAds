@@ -14,11 +14,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
     def image_thumbnail(self, obj):
 
-        width = 125
-        if obj.ad_type == Advertisement.TOP_AD:
-            width = 300
-
-        return '<img src="{0}" width="{1}" />'.format(obj.image.url, width)
+        return '<img src="{0}" width="{1}" height="{2}" />'.format(obj.image.url, obj.panel.width, obj.panel.height)
     image_thumbnail.allow_tags = True
 
     def queryset(self, request):
