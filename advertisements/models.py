@@ -46,6 +46,9 @@ class AdvertisementPanel(models.Model):
     height = models.PositiveIntegerField()
     width = models.PositiveIntegerField()
 
+    def __unicode__(self):
+        return "{} ({}x{})".format(self.name, self.width, self.height)
+
 
 class Advertisement(models.Model):
 
