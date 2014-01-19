@@ -1,11 +1,13 @@
 from django.db import models
 import uuid
 import os
+from random import randint, sample
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.signing import TimestampSigner
+from django.utils.functional import cached_property
 from .managers import AdvertisementManager
 
 
@@ -41,14 +43,63 @@ def get_file_path(instance, filename):
     return os.path.join('resources', filename)
 
 
-class Advertisement(models.Model):
-    TOP_AD = 't'
-    SIDE_AD = 's'
+class AdvertisementPanel(models.Model):
+    name = models.CharField(max_length=255)
+    height = models.PositiveIntegerField()
+    width = models.PositiveIntegerField()
 
-    AD_TYPES = (
-        (TOP_AD, 'Banner Ad'),
-        (SIDE_AD, 'Side Ad'),
-    )
+    cols = models.PositiveIntegerField(default=1)
+    rows = models.PositiveIntegerField(default=1)
+
+    @cached_property
+    def ad_display_num(self):
+        return self.cols * self.rows
+
+    @cached_property
+    def total_width(self):
+        total_margin = 5
+        return (self.cols * (self.width + total_margin)) + total_margin
+
+    @cached_property
+    def total_height(self):
+        total_margin = 5
+        return (self.rows * (self.height + total_margin)) + total_margin
+
+    def get_adverts(self):
+        viable_adverts = self.advertisement_set.filter(status=Advertisement.ACTIVE)
+
+        total_ads = viable_adverts.count()
+
+        if total_ads == 0:
+            return []
+
+        if total_ads < self.ad_display_num:
+            # There are not enough ads, so just return what we have
+            return list(viable_adverts)
+
+        random_positions = sample(range(total_ads), self.ad_display_num)
+        adverts = []
+
+        for position in random_positions:
+            adverts.append(viable_adverts.all()[position])
+
+        return adverts
+
+    def get_absolute_url(self):
+        return reverse('advert:panel', args=[self.pk])
+
+    def get_iframe_url(self):
+        return '<iframe width="{0}" height="{1}" frameborder="0" scrolling="no" src="[INSERT_BASE_URL_HERE]{2}"></iframe>'.format(
+            self.total_width,
+            self.total_height,
+            self.get_absolute_url(),
+        )
+
+    def __unicode__(self):
+        return "{} ({}x{})".format(self.name, self.width, self.height)
+
+
+class Advertisement(models.Model):
 
     ACTIVE = 'a'
     INACTIVE = 'i'
@@ -60,7 +111,7 @@ class Advertisement(models.Model):
         (PENDING, 'Pending'),
     )
 
-    ad_type = models.CharField(max_length=1, choices=AD_TYPES)
+    panel = models.ForeignKey(AdvertisementPanel)
     provider = models.ForeignKey(Provider)
     url = models.URLField(max_length=255)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=ACTIVE)
@@ -81,7 +132,7 @@ class Advertisement(models.Model):
     objects = AdvertisementManager()
 
     def __unicode__(self):
-        return "{0} ({1})".format(self.provider.name, self.get_ad_type_display())
+        return "{0} - {1}".format(self.provider.name, self.panel)
 
     def clicked(self):
         click = Click(
@@ -90,11 +141,6 @@ class Advertisement(models.Model):
         click.save()
 
         return click
-
-    def is_side(self):
-        if self.ad_type == self.SIDE_AD:
-            return True
-        return False
 
     def click_history(self, history_days=10):
         today = timezone.now().date()

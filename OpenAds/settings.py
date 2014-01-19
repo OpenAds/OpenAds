@@ -14,12 +14,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Only mysql support
-        'NAME': 'adverts2',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',  # Only mysql support
+        'NAME': os.path.join(BASE_PATH, 'database.sqlite3'),
+        #'USER': 'root',
+        #'PASSWORD': '',
+        #'HOST': 'localhost',
+        #'PORT': '',
     }
 }
 
@@ -163,7 +163,7 @@ INSTALLED_APPS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-LOGIN_REDIRECT_URL = '/data/'
+LOGIN_REDIRECT_URL = '/'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",

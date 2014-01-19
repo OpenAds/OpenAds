@@ -1,12 +1,15 @@
 from django.contrib import admin
-from advertisements.models import Advertisement, Provider, Click
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
+from django.template import Context, Template
+from advertisements.models import Advertisement, Provider, Click, AdvertisementPanel
 from django.db.models import Count
 
 
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ('provider', 'ad_type', 'image_thumbnail', 'created', 'status', 'total_clicks')
+    list_display = ('provider', 'panel', 'image_thumbnail', 'created', 'status', 'total_clicks')
     date_hierarchy = 'created'
-    list_filter = ('ad_type', 'status', 'created')
+    list_filter = ('panel', 'status', 'created')
 
     def total_clicks(self, obj):
         return obj.click_set.count()
@@ -14,11 +17,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
     def image_thumbnail(self, obj):
 
-        width = 125
-        if obj.ad_type == Advertisement.TOP_AD:
-            width = 300
-
-        return '<img src="{0}" width="{1}" />'.format(obj.image.url, width)
+        return '<img src="{0}" width="{1}" height="{2}" />'.format(obj.image.url, obj.panel.width, obj.panel.height)
     image_thumbnail.allow_tags = True
 
     def queryset(self, request):
@@ -48,5 +47,39 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
     actions = [make_enabled, make_disabled]
 
+
+class PanelAdmin(admin.ModelAdmin):
+    readonly_fields = ('look_and_feel', 'embed_url',)
+    list_display = ('name', 'width', 'height', 'cols', 'rows',)
+
+    def look_and_feel(self, instance):
+        if instance.pk is None:
+            return "Preview available after save"
+        return Template("""
+        {% spaceless %}
+        <iframe src="{% url 'advert:preview_size' panel.width panel.height panel.cols panel.rows %}" height={{ panel.total_height }} width={{ panel.total_width }} style="border: none;">
+        </iframe>
+        {% endspaceless %}
+        """).render(Context({
+            "panel": instance,
+        }))
+
+    look_and_feel.allow_tags = True
+    look_and_feel.short_description = 'Preview'
+
+    def embed_url(self, instance):
+        if instance.pk is None:
+            return "Embed URL available after save"
+
+        return format_html(
+            "{0} {1}",
+            instance.get_iframe_url(),
+            mark_safe("<br> <strong>Replace [INSERT_BASE_URL_HERE] with the site url</strong>")
+        )
+    embed_url.allow_tags = True
+    embed_url.short_description = "Embed URL"
+
+
 admin.site.register(Provider)
 admin.site.register(Advertisement, AdvertisementAdmin)
+admin.site.register(AdvertisementPanel, PanelAdmin)

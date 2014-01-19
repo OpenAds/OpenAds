@@ -7,7 +7,7 @@ from django.views.generic.edit import FormView
 from braces.views import LoginRequiredMixin, SuperuserRequiredMixin, FormMessagesMixin
 from advertisements.models import Advertisement, Provider
 from advertisements.forms import AdvertisementURLForm, AdvertisementRequestForm
-from advertisements.views.mixins import ProviderPermissionRequired, AdvertLoader
+from advertisements.views.mixins import ProviderPermissionRequired, AdvertLoader, PanelLoadMixin
 
 
 class ClickRegisterView(View):
@@ -24,44 +24,31 @@ class ClickRegisterView(View):
         return HttpResponseRedirect(advert.url)
 
 
-class TopAdView(TemplateView):
-    template_name = "advertisements/top_ad.html"
+class PanelAdView(PanelLoadMixin, TemplateView):
+    template_name = 'advertisements/ad_panel.html'
 
     def get_context_data(self, **kwargs):
-        context = super(TopAdView, self).get_context_data(**kwargs)
 
-        context['advert'] = Advertisement.objects.filter(
-            ad_type=Advertisement.TOP_AD,
-            status=Advertisement.ACTIVE
-        ).get_single_random()
+        context = super(PanelAdView, self).get_context_data(**kwargs)
+
+        context['adverts'] = self.panel.get_adverts()
 
         return context
 
-    def get(self, request, *args, **kwargs):
 
-        if not Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).exists():
-            return HttpResponse("No adverts") # TODO: Placeholder
-        return super(TopAdView, self).get(request, *args, **kwargs)
-
-
-class SideAdView(TemplateView):
-    template_name = "advertisements/side_ads.html"
+class PreviewView(SuperuserRequiredMixin, TemplateView):
+    template_name = 'advertisements/preview.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SideAdView, self).get_context_data(**kwargs)
 
-        context['adverts'] = Advertisement.objects.filter(
-            ad_type=Advertisement.SIDE_AD,
-            status=Advertisement.ACTIVE
-        ).get_sample_random()
+        context = super(PreviewView, self).get_context_data(**kwargs)
+
+        context["width"] = kwargs["width"]
+        context["height"] = kwargs["height"]
+        context["cols"] = range(int(kwargs["cols"]))
+        context["rows"] = range(int(kwargs["rows"]))
 
         return context
-
-    def get(self, request, *args, **kwargs):
-
-        if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
-            return HttpResponse("No adverts")  # TODO: Placeholder
-        return super(SideAdView, self).get(request, *args, **kwargs)
 
 
 class ProviderPermissionRedirectView(ProviderPermissionRequired, View):

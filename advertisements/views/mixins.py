@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from braces.views import LoginRequiredMixin
-from advertisements.models import Advertisement, Provider
+from advertisements.models import Advertisement, AdvertisementPanel, Provider
 
 
 class ProviderAccessPermissionMixin(object):
@@ -48,5 +48,23 @@ class AdvertLoader(object):
 
         context = super(AdvertLoader, self).get_context_data(**kwargs)
         context["advert"] = self.advert
+
+        return context
+
+
+class PanelLoadMixin(object):
+    panel = None
+
+    def dispatch(self, request, *args, **kwargs):
+
+        self.panel = get_object_or_404(AdvertisementPanel, pk=kwargs['panel_pk'])
+
+        return super(PanelLoadMixin, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(PanelLoadMixin, self).get_context_data(**kwargs)
+
+        context["panel"] = self.panel
 
         return context

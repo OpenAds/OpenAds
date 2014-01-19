@@ -22,4 +22,4 @@ class AdvertisementRequestForm(forms.ModelForm):
 
     class Meta:
         model = Advertisement
-        fields = ('ad_type', 'url', 'image')
+        fields = ('panel', 'url', 'image')

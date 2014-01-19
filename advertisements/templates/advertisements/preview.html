@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .advert {
+      background-color: #dcdcdc;
+      color: #000000;
+      float: left;
+      margin-top: 5px;
+      margin-left: 5px;
+      margin-bottom: 0;
+      margin-right: 0px;
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      padding: 0;
+    }
+    .advert-row {
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  {% for row in rows %}
+    <div class="advert-row">
+      {% for col in cols %}
+        <div class="advert" style="width: {{ width }}px; height: {{ height }}px">
+        Advert <br>{{ row }}, {{ col }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</body>
+</html>
