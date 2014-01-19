@@ -24,46 +24,6 @@ class ClickRegisterView(View):
         return HttpResponseRedirect(advert.url)
 
 
-class TopAdView(TemplateView):
-    template_name = "advertisements/top_ad.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(TopAdView, self).get_context_data(**kwargs)
-
-        context['advert'] = Advertisement.objects.filter(
-            ad_type=Advertisement.TOP_AD,
-            status=Advertisement.ACTIVE
-        ).get_single_random()
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-
-        if not Advertisement.objects.filter(ad_type=Advertisement.TOP_AD, status=Advertisement.ACTIVE).exists():
-            return HttpResponse("No adverts") # TODO: Placeholder
-        return super(TopAdView, self).get(request, *args, **kwargs)
-
-
-class SideAdView(TemplateView):
-    template_name = "advertisements/side_ads.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(SideAdView, self).get_context_data(**kwargs)
-
-        context['adverts'] = Advertisement.objects.filter(
-            ad_type=Advertisement.SIDE_AD,
-            status=Advertisement.ACTIVE
-        ).get_sample_random()
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-
-        if not Advertisement.objects.filter(ad_type=Advertisement.SIDE_AD, status=Advertisement.ACTIVE).exists():
-            return HttpResponse("No adverts")  # TODO: Placeholder
-        return super(SideAdView, self).get(request, *args, **kwargs)
-
-
 class PanelAdView(PanelLoadMixin, TemplateView):
     template_name = 'advertisements/ad_panel.html'
 
