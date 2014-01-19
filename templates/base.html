@@ -23,6 +23,9 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav">
             <li class="{% if is_home %}active{% endif %}"><a href="{% url 'provider:home' %}">Home</a></li>
+            {% if request.user.is_superuser %}
+              <li><a href="{% url 'admin:index' %}">Admin</a></li>
+            {% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}
