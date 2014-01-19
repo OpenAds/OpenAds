@@ -6,6 +6,7 @@ from datetime import timedelta
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.signing import TimestampSigner
+from django.utils.functional import cached_property
 from .managers import AdvertisementManager
 
 
@@ -45,6 +46,13 @@ class AdvertisementPanel(models.Model):
     name = models.CharField(max_length=255)
     height = models.PositiveIntegerField()
     width = models.PositiveIntegerField()
+
+    cols = models.PositiveIntegerField(default=1)
+    rows = models.PositiveIntegerField(default=1)
+
+    @cached_property
+    def ad_display_num(self):
+        return self.cols * self.rows
 
     def __unicode__(self):
         return "{} ({}x{})".format(self.name, self.width, self.height)
