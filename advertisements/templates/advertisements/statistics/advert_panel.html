@@ -7,4 +7,7 @@
         <img border="0" width="{{ advert.panel.width }}" height="{{ advert.panel.height }}" src="{{ advert.image.url }}" style="margin: auto; display: block">
     </a>
   </div>
+  <div class="panel-footer text-right">
+    <a href="{% url 'provider:advert_statistics' advert.pk %}" class="btn btn-success btn-xs">View Statistics</a>
+  </div>
 </div>
