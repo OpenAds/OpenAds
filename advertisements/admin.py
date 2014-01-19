@@ -53,7 +53,8 @@ class PanelAdmin(admin.ModelAdmin):
     def look_and_feel(self, instance):
         return Template("""
         {% spaceless %}
-        <iframe src="{% url 'advert:preview_size' panel.width panel.height panel.cols panel.rows %}"></iframe>
+        <iframe src="{% url 'advert:preview_size' panel.width panel.height panel.cols panel.rows %}" height={{ panel.total_height }} width={{ panel.total_width }} style="border: none;">
+        </iframe>
         {% endspaceless %}
         """).render(Context({
             "panel": instance,

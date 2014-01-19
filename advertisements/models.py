@@ -54,6 +54,16 @@ class AdvertisementPanel(models.Model):
     def ad_display_num(self):
         return self.cols * self.rows
 
+    @cached_property
+    def total_width(self):
+        total_margin = 5
+        return (self.cols * (self.width + total_margin)) + total_margin
+
+    @cached_property
+    def total_height(self):
+        total_margin = 5
+        return (self.rows * (self.height + total_margin)) + total_margin
+
     def __unicode__(self):
         return "{} ({}x{})".format(self.name, self.width, self.height)
 
