@@ -65,8 +65,15 @@ class SideAdView(TemplateView):
 
 
 class PanelAdView(PanelLoadMixin, TemplateView):
-    def get_template_names(self):
-        return []
+    template_name = 'advertisements/ad_panel.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(PanelAdView, self).get_context_data(**kwargs)
+
+        context['adverts'] = self.panel.get_adverts()
+
+        return context
 
 
 class PreviewView(SuperuserRequiredMixin, TemplateView):

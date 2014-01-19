@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 import os
+from random import randint, sample
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.models import User
@@ -63,6 +64,26 @@ class AdvertisementPanel(models.Model):
     def total_height(self):
         total_margin = 5
         return (self.rows * (self.height + total_margin)) + total_margin
+
+    def get_adverts(self):
+        viable_adverts = self.advertisement_set.filter(status=Advertisement.ACTIVE)
+
+        total_ads = viable_adverts.count()
+
+        if total_ads == 0:
+            return []
+
+        if total_ads < self.ad_display_num:
+            # There are not enough ads, so just return what we have
+            return list(viable_adverts)
+
+        random_positions = sample(range(total_ads), self.ad_display_num)
+        adverts = []
+
+        for position in random_positions:
+            adverts.append(viable_adverts.all()[position])
+
+        return adverts
 
     def __unicode__(self):
         return "{} ({}x{})".format(self.name, self.width, self.height)
