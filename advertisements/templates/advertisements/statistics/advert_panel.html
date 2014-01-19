@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">#{{ ad_num }} {{ advert.get_ad_type_display }} ({{ advert.image_width }} x {{ advert.image_height }})</h3>
+    <h3 class="panel-title">#{{ ad_num }} {{ advert.panel.name }} ({{ advert.panel.width }} x {{ advert.panel.height }})</h3>
   </div>
   <div class="panel-body">
     <a href="{% url 'provider:advert_statistics' advert.pk %}">

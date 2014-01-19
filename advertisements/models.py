@@ -93,11 +93,6 @@ class Advertisement(models.Model):
 
         return click
 
-    def is_side(self):
-        if self.ad_type == self.SIDE_AD:
-            return True
-        return False
-
     def click_history(self, history_days=10):
         today = timezone.now().date()
         click_data = []
