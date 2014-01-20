@@ -13,17 +13,11 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
     def total_clicks(self, obj):
         return obj.click_set.count()
-    total_clicks.admin_order_field = 'clicks'
 
     def image_thumbnail(self, obj):
 
         return '<img src="{0}" width="{1}" height="{2}" />'.format(obj.image.url, obj.panel.width, obj.panel.height)
     image_thumbnail.allow_tags = True
-
-    def queryset(self, request):
-        q = super(AdvertisementAdmin, self).queryset(request)
-        q = q.annotate(clicks=Count('click'))
-        return q
 
     def make_enabled(self, request, queryset):
         updated_count = queryset.update(status=Advertisement.ACTIVE)
