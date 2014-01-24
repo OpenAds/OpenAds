@@ -7,7 +7,8 @@ from .views import (
     ProviderListView,
     ProviderStatisticsView,
     AdvertStatisticsView,
-    ProviderRequestView
+    ProviderRequestView,
+    PublicAdListView,
 )
 
 
@@ -26,4 +27,5 @@ urlpatterns = patterns('advertisements.views',
     url(r'^c/(?P<ad_identifier>\d+:.+)/$', ClickRegisterView.as_view(), name='go'),
     url(r'^(?P<panel_pk>\d+)/$', PanelAdView.as_view(), name="panel"),
     url(r'^preview/(?P<width>\d+)/(?P<height>\d+)/(?P<cols>\d+)/(?P<rows>\d+)/$', PreviewView.as_view(), name="preview_size"),
+    url(r'^public/', PublicAdListView.as_view()),
 )

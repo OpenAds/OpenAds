@@ -24,6 +24,9 @@ class Provider(models.Model):
     def active_ads(self):
         return self.advertisement_set.filter(status=Advertisement.ACTIVE).count()
 
+    def active_ads_list(self):
+        return self.advertisement_set.filter(status=Advertisement.ACTIVE)
+
     def inactive_ads(self):
         return self.advertisement_set.filter(status=Advertisement.INACTIVE).count()
 

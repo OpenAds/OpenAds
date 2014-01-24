@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block page-title %}All Providers{% endblock %}
+
+{% block content %}
+  {% for provider in providers %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">{{ provider.name }}</h3>
+      </div>
+      <div class="panel-body">
+        {% with provider.active_ads as active_ads %}
+          {{ provider.name }} has {{ active_ads }} active advertisement{{ active_ads | pluralize }}.
+        {% endwith %}
+      </div>
+
+      <ul class="list-group">
+        {% for advert in provider.active_ads_list %}
+          <li class="list-group-item text-center">
+            <strong>{{ advert.panel.name }} ({{ advert.panel.width }}x{{ advert.panel.height }})</strong>
+            -
+            <strong class="text-primary">Created {{ advert.created | timesince }} ago</strong>
+            <br>
+            <strong>Website URL: </strong><a href="{{ advert.url }}">{{ advert.url }}</a>
+            <br>
+            <a target="_blank" href="{{ advert.url }}">
+              <img border="0" width="{{ advert.panel.width }}" height="{{ advert.panel.height }}" src="{{ advert.image.url }}" class="main-item">
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% empty %}
+    No active advertisements!
+  {% endfor %}
+  <h2 class="page-header">Compact list</h2>
+
+  <ul>
+  {% for provider in providers %}
+    <li>{{ provider.name }} (x{{ provider.active_ads }})</li>
+  {% endfor %}
+  </ul>
+
+  <br>
+{% endblock %}

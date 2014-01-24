@@ -36,6 +36,18 @@ class PanelAdView(PanelLoadMixin, TemplateView):
         return context
 
 
+class PublicAdListView(TemplateView):
+    template_name = 'advertisements/public_list.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(PublicAdListView, self).get_context_data(**kwargs)
+
+        context['providers'] = Provider.objects.filter(advertisement__status=Advertisement.ACTIVE).distinct()
+
+        return context
+
+
 class PreviewView(SuperuserRequiredMixin, TemplateView):
     template_name = 'advertisements/preview.html'
 
