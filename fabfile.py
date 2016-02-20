@@ -43,6 +43,7 @@ def install_requirements():
 def create_folders():
     mkdir(env.hosts_data.base_path())
     mkdir(env.hosts_data.log_path())
+    sudo('sudo ln -s /usr/include/freetype2 /usr/include/freetypeserver')
 
 
 def create_virtual_environment():
